@@ -3,7 +3,7 @@ import { Layout } from './components/layout/Layout';
 import { PrivateRoute } from './components/auth/PrivateRoute';
 
 import LoginPage from "./pages/LoginPage"
-import RegPage from "./pages/LoginPage"
+import RegPage from "./pages/RegPage"
 
 // // IMPORTANT: Add this import
 import OAuthRedirect from './pages/OAuthRedirect';
@@ -15,7 +15,7 @@ function App() {
     {/* ✅ OAuth route MUST be public and ABOVE PrivateRoute */}
     <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
     <Route path="/login" element={<LoginPage />} />
-    <Route path="/register" element={<RegPage />} />
+    <Route path="/signup" element={<RegPage />} />
 
     {/* Protected Routes */}
     <Route element={<PrivateRoute />}>

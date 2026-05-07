@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/elements/Button';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 import loginStyle from './LoginPage.module.css';
 
 export default function LoginPage() {
 
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
@@ -19,8 +21,8 @@ export default function LoginPage() {
     setLoading(true);
 
     try{
-      const response = await login({ username, password });
-      console.log('Login successful:', response);
+      const response = await login(username, password);
+      navigate('/main');
     }
     catch(error){
       console.error('An error occurred:', error);
