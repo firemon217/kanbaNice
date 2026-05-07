@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -9,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: kanbanice
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 8963Aa
+      POSTGRES_PASSWORD: pilot7736
 
     ports:
       - "5432:5432"
