@@ -70,18 +70,12 @@ public class UserController {
         return ResponseEntity.ok(userService.updateProfile(user.getId(), dto));
     }
 
-    @PutMapping("/request-email-change")
+    @PutMapping("/change-email")
     public ResponseEntity<String> requestEmailChange(@RequestParam @Email @NotBlank String newEmail) {
 
         User user = getCurrentUser();
         return ResponseEntity.ok(userService.requestEmailChange(user.getId(), newEmail));
     }
-
-    @GetMapping("/confirm-email-change")
-    public ResponseEntity<String> confirmEmailChange(@RequestParam String token) {
-        return ResponseEntity.ok(userService.confirmEmailChange(token));
-    }
-
 
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(
@@ -109,11 +103,6 @@ public class UserController {
     public ResponseEntity<String> deleteAccount(@RequestParam(required = false) String password) {
         User user = getCurrentUser();
         return ResponseEntity.ok(userService.deleteAccount(user.getId(), password));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<UserProfileResponseDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
 
