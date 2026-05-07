@@ -1,0 +1,8 @@
+:root {
+    --color-primary: var(--blue-500);
+
+    --color-secondary: var(--green-500);
+
+    --scrollbar-bg: var(--border);
+    --scrollbar-thumb: #9CA3AF;
+}
