@@ -56,7 +56,7 @@ export default function LoginPage() {
         {/* HEADER */}
         <div className={loginStyle.header}>
           <h1 className={loginStyle.title}>
-            Добро пожаловать
+            KanbaNice
           </h1>
 
           <p className={loginStyle.subtitle}>

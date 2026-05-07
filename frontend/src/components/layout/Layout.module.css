@@ -28,15 +28,36 @@
 }
 
 .main {
+  position: relative;
   flex: 1;
-  background: var(--color-background-secondary);
-  padding: 16px;
+}
+
+.bg{
+  position: absolute;
+  inset: 0;
+
+  background-image: var(--bg-forest);
+  background-size: cover;
+  background-position: center;
+
+  z-index: 0;
+}
+
+.bg::before
+{
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  z-index: 1;
 }
 
 .outlet {
-  background: var(--color-background-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+  position: relative;
+  z-index: 2;
+
   padding: 16px;
   min-height: 100%;
 }

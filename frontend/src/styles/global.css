@@ -1,5 +1,6 @@
 @import "./tokens/colors.css";
 @import "./tokens/semantic.css";
+@import "./tokens/link.css";
 
 * {
     box-sizing: border-box;

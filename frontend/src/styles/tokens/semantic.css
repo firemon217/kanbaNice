@@ -2,7 +2,7 @@
     /* Background */
     --color-background: var(--bluegreen-500);
     --color-background-secondary: var(--white-500);
-    --color-background-tertiary: var(--gray-200);
+    --color-background-tertiary: var(--bluegreen-800);
 
     /* Button */
     --color-button-primary: var(--bluegreen-500);
@@ -11,16 +11,22 @@
     --color-button-close: var(--gray-300);
 
         /* Borders */
-        --color-button-primary-border: var(--bluegreen-700);
+        --color-button-primary-border: var(--bluegreen-800);
         --color-button-cancel-border: var(--red-400);
         --color-button-delete-border: var(--red-700);
         --color-button-close-border: var(--gray-400);
 
         /* Hover */
-        --color-button-primary-hover: var(--bluegreen-600);
+        --color-button-primary-hover: var(--bluegreen-700);
         --color-button-cancel-hover: var(--red-300);
         --color-button-delete-hover: var(--red-600);
         --color-button-close-hover: var(--gray-400);
+
+        /* Active */
+        --color-button-primary-active: var(--bluegreen-900);
+        --color-button-cancel-active: var(--red-400);
+        --color-button-delete-active: var(--red-700);
+        --color-button-close-active: var(--gray-700);
 
     /* Text */
     --color-text-primary: var(--white-100);

@@ -18,6 +18,7 @@ export const Layout = () => {
           </div>
         </main>
       </div>
+      <div className={layout.bg}></div>
     </div>
   );
 };

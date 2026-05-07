@@ -11,7 +11,7 @@ export default function RegPage() {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
+  const [userType, setUserType] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,7 +33,7 @@ export default function RegPage() {
 
     const success = await signup({
       name,
-      role,
+      userType,
       username,
       email,
       password,
@@ -131,7 +131,7 @@ export default function RegPage() {
             </div>
           </div>
 
-          {/* ROLE */}
+          {/* userType */}
           <div className={signupStyle.field}>
             <label className={signupStyle.label}>
               Роль пользователя
@@ -144,8 +144,8 @@ export default function RegPage() {
 
               <select
                 required
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
                 className={signupStyle.select}
               >
                 <option value="" disabled hidden>

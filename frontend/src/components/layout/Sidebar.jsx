@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Button } from '../ui/elements/Button';
 
 import sidebar from './Sidebar.module.css';
 
@@ -15,6 +14,10 @@ export const Sidebar = ({ isOpen, setMobileMenuOpen }) => {
 
   return (
     <div className={sidebar.container}>
+        <header className={sidebar.header}>
+          KanbaNice
+        </header>
+
         <nav className={sidebar.nav}>
           {NAV_ITEMS_PROFILE.map((item) => {
             return (
@@ -23,11 +26,9 @@ export const Sidebar = ({ isOpen, setMobileMenuOpen }) => {
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  ` ${
-                    isActive 
-                      ? '' 
-                      : ''
-                  }`
+                  isActive
+                    ? sidebar.navActive
+                    : sidebar.nav
                 }
               >
                 <span className={sidebar.navLinkText}>{item.label}</span>
@@ -35,22 +36,6 @@ export const Sidebar = ({ isOpen, setMobileMenuOpen }) => {
             );
           })}
         </nav>
-
-        <footer className={sidebar.footer}>
-          <div className={sidebar.userAvatar}>
-            {user?.name?.charAt(0) || user?.username?.charAt(0) || '?'}
-          </div>
-            <div className={sidebar.userName}>
-              <p className={sidebar.name}>{user?.name}</p>
-              <p className={sidebar.username}>@{user?.username}</p>
-            </div>
-          <Button 
-            variant="cancel"
-            onClick={logout}
-          >
-            Выход
-          </Button>
-        </footer>
     </div>
   );
 };

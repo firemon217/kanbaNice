@@ -89,6 +89,28 @@ export const AuthProvider = ({ children }) => {
     window.location.href = "/login";
   };
 
+  const changeEmail = async (email) => {
+    try {
+      await userService.changeEmail(email);
+      toast.success('Ссылка для сброса пароля отправлена на вашу почту.');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Signup failed.');
+      return false;
+    }
+  };
+
+  const changePassword= async (currentPassword, newPassword, confirmPassword) => {
+    try {
+      await userService.changePassword({currentPassword, newPassword, confirmPassword});
+      toast.success('Ссылка для сброса пароля отправлена на вашу почту.');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Signup failed.');
+      return false;
+    }
+  };
+
   const value = {
     user,
     token,
