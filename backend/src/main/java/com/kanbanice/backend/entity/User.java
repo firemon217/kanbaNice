@@ -3,6 +3,7 @@ package com.kanbanice.backend.entity;
 import com.kanbanice.backend.Security.RolePermissionMapping;
 import com.kanbanice.backend.entity.type.AuthProviderType;
 import com.kanbanice.backend.entity.type.RoleType;
+import com.kanbanice.backend.entity.type.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,9 @@ public class User implements UserDetails {
 
     @Column(unique = true, nullable = false)
     private String username;
+
+    @Column()
+    private UserType userType;
 
     @Column(nullable = false)
     private String password;

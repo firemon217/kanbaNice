@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import com.kanbanice.backend.entity.type.UserType;
 
 import java.util.Set;
 import java.util.UUID;
@@ -67,6 +68,7 @@ public class AuthService {
                 .providerId(providerId)
                 .providerType(authProviderType)
                 .roles(Set.of(RoleType.USER))
+                .userType(signupRequestDTO.getUserType())
                 .build();
 
 
@@ -104,7 +106,7 @@ public class AuthService {
         if(user==null && EmailUser==null){
 
             String userName=authUtil.determineUsernameFromOAuth2User(oAuth2User,registrationId,ProviderId);
-            user=SignUpInternal(new SignupRequestDTO(userName,null,name), ProviderId,ProviderType);
+            user=SignUpInternal(new SignupRequestDTO(userName,null,name, UserType.WORKER), ProviderId,ProviderType);
         }
         else if(user!=null){
           if(email!=null && !email.isBlank() && !email.equals(user.getUsername())){
