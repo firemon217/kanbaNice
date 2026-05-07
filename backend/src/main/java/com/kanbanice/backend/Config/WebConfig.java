@@ -40,6 +40,7 @@ public class WebConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/forgot-password", "/api/users/reset-password").permitAll()
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
