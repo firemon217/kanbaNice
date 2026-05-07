@@ -70,6 +70,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const forgotPassword = async (email) => {
+    try {
+      await userService.forgotPassword(email);
+      toast.success('Ссылка для сброса пароля отправлена на вашу почту.');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Signup failed.');
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
@@ -86,6 +97,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     setUser,
+    forgotPassword,
   };
 
   return (

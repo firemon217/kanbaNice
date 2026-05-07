@@ -3,20 +3,33 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/elements/Button';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Modal } from '../components/ui/Modal';
 
 import loginStyle from './LoginPage.module.css';
 
 export default function LoginPage() {
-
-  const { login } = useAuth();
+  const { login, forgotPassword } = useAuth();
   const navigate = useNavigate();
+
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submittedForgotPassword, setSubmittedForgotPassword] = useState(false);
+
+  const handleSubmitForgotPassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await forgotPassword(email);
+    setSubmittedForgotPassword(true);
+    setLoading(false);
+  };
+
+  const handleSubmitLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -53,7 +66,7 @@ export default function LoginPage() {
 
         {/* FORM */}
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmitLogin}
           className={loginStyle.form}
         >
           {/* USERNAME */}
@@ -112,12 +125,14 @@ export default function LoginPage() {
             </div>
 
             <div className={loginStyle.actions}>
-              <Link
-                to="/forgot-password"
-                className={loginStyle.link}
+              <Button
+                variant="primary"
+                className={loginStyle.forgotButton}
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
               >
                 Забыли пароль?
-              </Link>
+              </Button>
             </div>
           </div>
 
@@ -149,6 +164,37 @@ export default function LoginPage() {
           </Link>
         </div>
       </div>
+
+      <Modal isOpen={showForgotPassword} onClose={() => setShowForgotPassword(false)} title="Восстановление пароля">
+        {submittedForgotPassword ? (
+          <p className={loginStyle.label}>Если аккаунт с таким email существует, ссылка для сброса пароля была отправлена на вашу почту.</p>
+        ) : (
+          <form onSubmit={handleSubmitForgotPassword}>
+            <div className={loginStyle.field}>
+              <label className={loginStyle.label}>
+                Email
+              </label>
+              <div className={loginStyle.inputWrapper}>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Введите ваш email"
+                  className={loginStyle.input}
+                />
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? 'Отправка...' : 'Отправить'}
+            </Button>
+          </form>
+        )}
+      </Modal>
     </div>
   );
 }

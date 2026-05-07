@@ -11,6 +11,10 @@
     background: var(--color-button-primary-hover);
 }
 
+.primary:active {
+  transform: scale(0.96);
+}
+
 .cancel {
     margin-left: auto;
     background: var(--color-button-cancel);
@@ -24,6 +28,10 @@
     background: var(--color-button-cancel-hover);
 }
 
+.cancel:active {
+  transform: scale(0.96);
+}
+
 .delete {
     margin-left: auto;
     background: var(--color-button-delete);
@@ -35,4 +43,32 @@
 
 .delete:hover {
     background: var(--color-button-delete-hover);
+}
+
+.delete:active {
+  transform: scale(0.96);
+}
+
+.close {
+    margin-left: auto;
+    background: var(--color-button-close);
+    border: 1px solid var(--color-button-close-border);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.close:hover {
+    background: var(--color-button-close-hover);
+}
+
+.close:active {
+  transform: scale(0.96);
 }

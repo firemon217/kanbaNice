@@ -1,0 +1,115 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(17, 24, 39, 0.45);
+
+  backdrop-filter: blur(4px);
+
+  z-index: 1000;
+
+  animation: fadeIn 0.2s ease;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 520px;
+
+  background: var(--color-background);
+
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+
+  box-shadow: var(--shadow-lg);
+
+  overflow: hidden;
+
+  z-index: 1;
+
+  animation: modalAppear 0.2s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px 24px;
+
+  border-bottom: 1px solid var(--color-border);
+
+  background: var(--color-background);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+
+  color: var(--color-text-primary);
+
+  letter-spacing: -0.02em;
+}
+
+.closeButton {
+  width: 38px;
+  height: 38px;
+}
+
+.content {
+  padding: 24px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    padding: 16px;
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .header {
+    padding: 18px 20px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+}
