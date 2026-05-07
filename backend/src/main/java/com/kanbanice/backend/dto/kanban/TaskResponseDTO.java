@@ -10,6 +10,7 @@ public record TaskResponseDTO(
         String title,
         String description,
         TaskStatus status,
+        String statusChangedBy,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

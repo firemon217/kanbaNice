@@ -30,7 +30,7 @@ public class TaskService {
 
         KanbanProject project = board.getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertProjectLeader(currentUser, project);
+        assertMember(currentUser, project);
 
         return taskRepository.findAllByBoard(board).stream()
                 .map(this::toTaskResponse)
@@ -46,7 +46,7 @@ public class TaskService {
 
         KanbanProject project = board.getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertMember(currentUser, project);
+        assertProjectLeader(currentUser, project);
 
         KanbanTask task = KanbanTask.builder()
                 .title(dto.title())
@@ -68,7 +68,7 @@ public class TaskService {
 
         KanbanProject project = task.getBoard().getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertProjectLeader(currentUser, project);
+        assertMember(currentUser, project);
 
         return toTaskResponse(task);
     }
@@ -82,11 +82,29 @@ public class TaskService {
 
         KanbanProject project = task.getBoard().getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertMember(currentUser, project);
+        ProjectMember member = assertMemberAndGetRole(currentUser, project);
 
-        if (dto.title() != null) task.setTitle(dto.title());
-        if (dto.description() != null) task.setDescription(dto.description());
-        if (dto.status() != null) task.setStatus(dto.status());
+        boolean isProjectLeader = currentUser.getUserType() == UserType.LEADER
+                && member.getRole() == ProjectMemberRole.LEADER;
+        if (!isProjectLeader && currentUser.getUserType() == UserType.WORKER) {
+            if (dto.title() != null || dto.description() != null) {
+                throw new IllegalStateException("WORKER can only change task status");
+            }
+            if (dto.status() == null) {
+                throw new IllegalStateException("Status is required for WORKER task update");
+            }
+        }
+
+        if (dto.title() != null) {
+            task.setTitle(dto.title());
+        }
+        if (dto.description() != null) {
+            task.setDescription(dto.description());
+        }
+        if (dto.status() != null && dto.status() != task.getStatus()) {
+            task.setStatus(dto.status());
+            task.setStatusChangedBy(currentUser.getUsername());
+        }
 
         KanbanTask saved = taskRepository.save(task);
         return toTaskResponse(saved);
@@ -142,6 +160,7 @@ public class TaskService {
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
+                task.getStatusChangedBy(),
                 task.getCreatedAt(),
                 task.getUpdatedAt()
         );

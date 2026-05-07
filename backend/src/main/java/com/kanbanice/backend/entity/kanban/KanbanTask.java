@@ -28,6 +28,9 @@ public class KanbanTask {
     @Column(nullable = false)
     private TaskStatus status;
 
+    @Column(name = "status_changed_by")
+    private String statusChangedBy;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "board_id", nullable = false)
     private KanbanBoard board;
