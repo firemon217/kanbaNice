@@ -60,11 +60,17 @@ public class AuthService {
         if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }
+        if (signupRequestDTO.getEmail() == null || signupRequestDTO.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {
+            throw new IllegalArgumentException("Email already taken");
+        }
 
          user = User.builder()
                 .name(signupRequestDTO.getName())
                 .username(signupRequestDTO.getUsername())
-                .email(signupRequestDTO.getUsername())
+                .email(signupRequestDTO.getEmail())
                 .providerId(providerId)
                 .providerType(authProviderType)
                 .roles(Set.of(RoleType.USER))
@@ -106,7 +112,7 @@ public class AuthService {
         if(user==null && EmailUser==null){
 
             String userName=authUtil.determineUsernameFromOAuth2User(oAuth2User,registrationId,ProviderId);
-            user=SignUpInternal(new SignupRequestDTO(userName,null,name, UserType.WORKER), ProviderId,ProviderType);
+            user=SignUpInternal(new SignupRequestDTO(userName,email,null,name, UserType.WORKER), ProviderId,ProviderType);
         }
         else if(user!=null){
           if(email!=null && !email.isBlank() && !email.equals(user.getUsername())){
