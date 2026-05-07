@@ -3,8 +3,8 @@ package com.kanbanice.backend.service.kanban;
 import com.kanbanice.backend.dto.kanban.*;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.kanban.*;
+import com.kanbanice.backend.entity.type.UserType;
 import com.kanbanice.backend.repository.kanban.KanbanBoardRepository;
-import com.kanbanice.backend.repository.kanban.KanbanProjectRepository;
 import com.kanbanice.backend.repository.kanban.KanbanTaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class TaskService {
 
         KanbanProject project = board.getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertMember(currentUser, project);
+        assertProjectLeader(currentUser, project);
 
         return taskRepository.findAllByBoard(board).stream()
                 .map(this::toTaskResponse)
@@ -68,7 +68,7 @@ public class TaskService {
 
         KanbanProject project = task.getBoard().getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertMember(currentUser, project);
+        assertProjectLeader(currentUser, project);
 
         return toTaskResponse(task);
     }
@@ -102,10 +102,7 @@ public class TaskService {
         KanbanProject project = task.getBoard().getProject();
         assertSameCompany(currentUser, project.getCompany());
 
-        ProjectMemberRole role = assertMemberAndGetRole(currentUser, project).getRole();
-        if (role != ProjectMemberRole.LEADER) {
-            throw new IllegalStateException("Only leader can delete task");
-        }
+        assertProjectLeader(currentUser, project);
 
         taskRepository.delete(task);
     }
@@ -127,6 +124,15 @@ public class TaskService {
                 .filter(m -> m.getUser().getId().equals(currentUser.getId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Forbidden: not a project member"));
+    }
+
+    private void assertProjectLeader(User currentUser, KanbanProject project) {
+        if (currentUser.getUserType() != UserType.LEADER) {
+            throw new IllegalStateException("Only LEADER can manage tasks");
+        }
+        if (assertMemberAndGetRole(currentUser, project).getRole() != ProjectMemberRole.LEADER) {
+            throw new IllegalStateException("Only project leader can manage tasks");
+        }
     }
 
     private TaskResponseDTO toTaskResponse(KanbanTask task) {

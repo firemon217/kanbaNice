@@ -2,6 +2,7 @@ package com.kanbanice.backend.controller.kanban;
 
 import com.kanbanice.backend.dto.kanban.BoardCreateDTO;
 import com.kanbanice.backend.dto.kanban.BoardResponseDTO;
+import com.kanbanice.backend.dto.kanban.BoardUpdateDTO;
 import com.kanbanice.backend.service.kanban.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,13 @@ public class BoardController {
     public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
         boardService.deleteBoard(boardId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/boards/{boardId}")
+    public ResponseEntity<BoardResponseDTO> updateBoard(
+            @PathVariable Long boardId,
+            @Valid @RequestBody BoardUpdateDTO dto
+    ) {
+        return ResponseEntity.ok(boardService.updateBoard(boardId, dto));
     }
 }

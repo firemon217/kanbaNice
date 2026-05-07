@@ -32,6 +32,14 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProject(projectId));
     }
 
+    @PostMapping("/{projectId}/members/{userId}")
+    public ResponseEntity<ProjectResponseDTO> addWorkerToProject(
+            @PathVariable Long projectId,
+            @PathVariable Long userId
+    ) {
+        return ResponseEntity.ok(projectService.addWorkerToProject(projectId, userId));
+    }
+
     @DeleteMapping("/{projectId}")
     public ResponseEntity<Void> deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(projectId);

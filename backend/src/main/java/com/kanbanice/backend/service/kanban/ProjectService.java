@@ -4,6 +4,8 @@ import com.kanbanice.backend.dto.kanban.*;
 import com.kanbanice.backend.entity.Company;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.kanban.*;
+import com.kanbanice.backend.entity.type.UserType;
+import com.kanbanice.backend.Repository.UserRepository;
 import com.kanbanice.backend.repository.kanban.KanbanProjectRepository;
 import com.kanbanice.backend.repository.kanban.ProjectMemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +23,7 @@ public class ProjectService {
     private final CurrentUserUtil currentUserUtil;
     private final KanbanProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<ProjectResponseDTO> listMyProjects() {
@@ -40,6 +43,9 @@ public class ProjectService {
     @Transactional
     public ProjectResponseDTO createProject(ProjectCreateDTO dto) {
         User currentUser = currentUserUtil.getCurrentUser();
+        if (currentUser.getUserType() != UserType.LEADER) {
+            throw new IllegalStateException("Only LEADER can create project");
+        }
         Company company = currentUser.getCompany();
 
         if (company == null) {
@@ -93,6 +99,47 @@ public class ProjectService {
         }
 
         projectRepository.delete(project);
+    }
+
+    @Transactional
+    public ProjectResponseDTO addWorkerToProject(Long projectId, Long userId) {
+        User currentUser = currentUserUtil.getCurrentUser();
+        if (currentUser.getUserType() != UserType.LEADER) {
+            throw new IllegalStateException("Only LEADER can add project members");
+        }
+
+        KanbanProject project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found"));
+        assertSameCompany(currentUser, project.getCompany());
+
+        ProjectMember currentMember = getProjectMember(currentUser, project);
+        if (currentMember.getRole() != ProjectMemberRole.LEADER) {
+            throw new IllegalStateException("Only project leader can add members");
+        }
+
+        User worker = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (worker.getUserType() != UserType.WORKER) {
+            throw new IllegalStateException("Only WORKER can be added to project");
+        }
+        if (worker.getCompany() == null || currentUser.getCompany() == null
+                || !worker.getCompany().getId().equals(currentUser.getCompany().getId())) {
+            throw new IllegalStateException("Worker must belong to your company");
+        }
+        if (projectMemberRepository.findByProjectAndUser(project, worker).isPresent()) {
+            throw new IllegalStateException("Worker already in this project");
+        }
+
+        ProjectMember member = ProjectMember.builder()
+                .project(project)
+                .user(worker)
+                .role(ProjectMemberRole.WORKER)
+                .build();
+        projectMemberRepository.save(member);
+        project.getMembers().add(member);
+
+        return toProjectResponse(project);
     }
 
     private void assertSameCompany(User currentUser, Company projectCompany) {
