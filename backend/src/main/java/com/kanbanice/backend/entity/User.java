@@ -4,6 +4,7 @@ import com.kanbanice.backend.Security.RolePermissionMapping;
 import com.kanbanice.backend.entity.type.AuthProviderType;
 import com.kanbanice.backend.entity.type.RoleType;
 import com.kanbanice.backend.entity.type.UserType;
+import com.kanbanice.backend.entity.Company;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -76,6 +77,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Set<RoleType> roles = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
