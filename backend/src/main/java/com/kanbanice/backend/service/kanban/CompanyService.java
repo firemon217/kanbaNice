@@ -5,15 +5,12 @@ import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
 import com.kanbanice.backend.entity.Company;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.type.UserType;
+import com.kanbanice.backend.repository.kanban.KanbaniceUserCompanyRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import com.kanbanice.backend.Repository.UserRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
 import jakarta.persistence.EntityNotFoundException;
 
 
@@ -23,6 +20,7 @@ public class CompanyService {
 
     private final CurrentUserUtil currentUserUtil;
     private final com.kanbanice.backend.Repository.UserRepository userRepository;
+    private final KanbaniceUserCompanyRepository companyRepository;
 
     @Transactional
     public CompanyResponseDTO createCompany(CompanyCreateDTO dto) {
@@ -40,6 +38,7 @@ public class CompanyService {
                 .name(dto.name())
                 .build();
 
+        company = companyRepository.save(company);
         currentUser.setCompany(company);
         userRepository.save(currentUser);
         return new CompanyResponseDTO(company.getId(), company.getName());

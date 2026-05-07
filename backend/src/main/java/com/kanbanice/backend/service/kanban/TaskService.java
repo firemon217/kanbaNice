@@ -59,6 +59,20 @@ public class TaskService {
         return toTaskResponse(saved);
     }
 
+    @Transactional(readOnly = true)
+    public TaskResponseDTO getTask(Long taskId) {
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        KanbanTask task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+
+        KanbanProject project = task.getBoard().getProject();
+        assertSameCompany(currentUser, project.getCompany());
+        assertMember(currentUser, project);
+
+        return toTaskResponse(task);
+    }
+
     @Transactional
     public TaskResponseDTO updateTask(Long taskId, TaskUpdateDTO dto) {
         User currentUser = currentUserUtil.getCurrentUser();
