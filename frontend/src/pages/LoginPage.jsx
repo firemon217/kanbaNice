@@ -1,40 +1,50 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/elements/Button';
+import { useAuth } from '../context/AuthContext';
 
-import styles from './LoginPage.module.css';
+import loginStyle from './LoginPage.module.css';
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
 
+  const { login } = useAuth();
+
+  const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    console.log({
-      username,
-      password,
-    });
+    try{
+      const response = await login({ username, password });
+      console.log('Login successful:', response);
+    }
+    catch(error){
+      console.error('An error occurred:', error);
+    }
+    finally{
+      setLoading(false);
+    }
+
   };
 
   const handleGoogleLogin = () => {
-    console.log('Google login');
+    console.log('Google loginStyle');
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.card}>
+    <div className={loginStyle.page}>
+      <div className={loginStyle.card}>
         {/* HEADER */}
-        <div className={styles.header}>
-          <h1 className={styles.title}>
+        <div className={loginStyle.header}>
+          <h1 className={loginStyle.title}>
             Добро пожаловать
           </h1>
 
-          <p className={styles.subtitle}>
+          <p className={loginStyle.subtitle}>
             Войдите, чтобы продолжить работу
           </p>
         </div>
@@ -42,17 +52,17 @@ export default function LoginPage() {
         {/* FORM */}
         <form
           onSubmit={handleSubmit}
-          className={styles.form}
+          className={loginStyle.form}
         >
           {/* USERNAME */}
-          <div className={styles.field}>
-            <label className={styles.label}>
+          <div className={loginStyle.field}>
+            <label className={loginStyle.label}>
               Имя пользователя
             </label>
 
-            <div className={styles.inputWrapper}>
-              <div className={styles.icon}>
-                <User size={18} />
+            <div className={loginStyle.inputWrapper}>
+              <div className={loginStyle.icon}>
+                {/* <User size={18} /> */}
               </div>
 
               <input
@@ -61,20 +71,20 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Введите имя пользователя"
-                className={styles.input}
+                className={loginStyle.input}
               />
             </div>
           </div>
 
           {/* PASSWORD */}
-          <div className={styles.field}>
-            <label className={styles.label}>
+          <div className={loginStyle.field}>
+            <label className={loginStyle.label}>
               Пароль
             </label>
 
-            <div className={styles.inputWrapper}>
-              <div className={styles.icon}>
-                <Lock size={18} />
+            <div className={loginStyle.inputWrapper}>
+              <div className={loginStyle.icon}>
+                {/* <Lock size={18} /> */}
               </div>
 
               <input
@@ -83,32 +93,32 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className={styles.input}
+                className={loginStyle.input}
               />
 
               <Button
                 variant="primary"
+                className={loginStyle.passwordButton}
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword
-                  ? <EyeOff size={18} />
-                  : <Eye size={18} />
+                  ? "eyeOff"
+                  : "eye"
                 }
               </Button>
             </div>
 
-            <div className={styles.actions}>
+            <div className={loginStyle.actions}>
               <Link
                 to="/forgot-password"
-                className={styles.link}
+                className={loginStyle.link}
               >
                 Забыли пароль?
               </Link>
             </div>
           </div>
 
-          {/* SUBMIT */}
           <Button
             variant="primary"
             type="submit"
@@ -118,23 +128,20 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {/* DIVIDER */}
-        <div className={styles.divider}>
+        <div className={loginStyle.divider}>
           <span>ИЛИ</span>
         </div>
 
-        {/* GOOGLE */}
         <Button variant="primary" onClick={handleGoogleLogin}>
           Продолжить с Google
         </Button>
 
-        {/* FOOTER */}
-        <div className={styles.footer}>
+        <div className={loginStyle.footer}>
           Нет аккаунта?{' '}
 
           <Link
             to="/signup"
-            className={styles.footerLink}
+            className={loginStyle.footerLink}
           >
             Зарегистрироваться
           </Link>
