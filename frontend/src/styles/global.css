@@ -1,2 +1,9 @@
 @import "./tokens/colors.css";
 @import "./tokens/semantic.css";
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}

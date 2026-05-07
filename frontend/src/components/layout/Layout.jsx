@@ -2,26 +2,18 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 
+import layout from './Layout.module.css';
+
 export const Layout = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
 
   return (
-    <div className="">
+    <div className={layout.container}>
       <Sidebar isOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
       
-      <div className={``}>
-        <header className="">
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className=""
-          >
-            {/* <Menu className="w-6 h-6" /> */}
-          </button>
-          <span className="">Student Tracker</span>
-        </header>
-
-        <main className="">
-          <div className="">
+      <div className={layout.content}>
+        <main className={layout.main}>
+          <div className={layout.outlet}>
             <Outlet />
           </div>
         </main>

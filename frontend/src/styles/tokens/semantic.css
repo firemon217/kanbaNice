@@ -1,8 +1,41 @@
 :root {
-    --color-primary: var(--blue-500);
+    /* Background */
+    --color-background: var(--bluegreen-500);
+    --color-background-secondary: var(--white-500);
+    --color-background-tertiary: var(--gray-200);
 
-    --color-secondary: var(--green-500);
+    /* Button */
+    --color-button-primary: var(--bluegreen-500);
+    --color-button-cancel: var(--red-200);
+    --color-button-delete: var(--red-500);
 
-    --scrollbar-bg: var(--border);
-    --scrollbar-thumb: #9CA3AF;
+        /* Borders */
+        --color-button-primary-border: var(--bluegreen-700);
+        --color-button-cancel-border: var(--red-400);
+        --color-button-delete-border: var(--red-700);
+
+        /* Hover */
+        --color-button-primary-hover: var(--bluegreen-600);
+        --color-button-cancel-hover: var(--red-300);
+        --color-button-delete-hover: var(--red-600);
+
+    /* Text */
+    --color-text-primary: var(--white-100);
+    --color-text-secondary: var(--white-50);
+    --color-text-tertiary: var(--gray-400);
+
+    /* Borders */
+    --color-border: var(--gray-200);
+    --color-border-hover: var(--gray-300);
+
+    /* Accent */
+    --color-primary: var(--white-500);
+    --color-primary-hover: var(--white-600);
+
+    /* UI states */
+    --color-hover: var(--gray-100);
+    --color-active: var(--gray-200);
+
+    /* Shadows (СИЛЬНО УПРОЩАЕМ) */
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
 }
