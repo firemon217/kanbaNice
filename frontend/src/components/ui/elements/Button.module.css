@@ -5,6 +5,7 @@
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
+    color: var(--color-text-primary);
 }
 
 .primary:hover {
@@ -12,7 +13,12 @@
 }
 
 .primary:active {
-  transform: scale(0.96);
+    transform: scale(0.96);
+}
+
+.primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .cancel {
@@ -22,6 +28,7 @@
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
+    color: var(--color-text-primary);
 }
 
 .cancel:hover {
@@ -29,7 +36,12 @@
 }
 
 .cancel:active {
-  transform: scale(0.96);
+    transform: scale(0.96);
+}
+
+.cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .delete {
@@ -46,7 +58,12 @@
 }
 
 .delete:active {
-  transform: scale(0.96);
+    transform: scale(0.96);
+}
+
+.delete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .close {
@@ -59,6 +76,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--color-text-primary);
     transition:
         background-color 0.2s ease,
         color 0.2s ease,
@@ -70,5 +88,37 @@
 }
 
 .close:active {
-  transform: scale(0.96);
+    transform: scale(0.96); 
+}
+
+.close:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.password {
+    margin-left: auto;
+    background: var(--color-button-primary);
+    border: 1px solid var(--color-button-primary-border);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--color-text-primary);
+    position: absolute;
+
+    top: calc(50% - 14px);
+    right: 12px; 
+}
+
+.password:hover {
+    background: var(--color-button-primary-hover);
+}
+
+.password:active {
+    transform: scale(0.96); 
+}
+
+.password:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

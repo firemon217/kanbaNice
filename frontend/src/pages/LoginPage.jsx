@@ -112,8 +112,7 @@ export default function LoginPage() {
               />
 
               <Button
-                variant="primary"
-                className={loginStyle.passwordButton}
+                variant="password"
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
               >
@@ -127,7 +126,6 @@ export default function LoginPage() {
             <div className={loginStyle.actions}>
               <Button
                 variant="primary"
-                className={loginStyle.forgotButton}
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
               >

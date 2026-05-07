@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Button } from '../components/ui/elements/Button';
 
 import { useAuth } from '../context/AuthContext';
 
@@ -9,6 +10,7 @@ import signupStyle from './RegPage.module.css';
 export default function RegPage() {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -33,6 +35,7 @@ export default function RegPage() {
       name,
       role,
       username,
+      email,
       password,
     });
 
@@ -78,7 +81,7 @@ export default function RegPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Иван Иванов"
+                placeholder="Проценко Дмитрий"
                 className={signupStyle.input}
               />
             </div>
@@ -100,7 +103,29 @@ export default function RegPage() {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="ivanov123"
+                placeholder="procenko"
+                className={signupStyle.input}
+              />
+            </div>
+          </div>
+
+          {/* EMAIL */}
+          <div className={signupStyle.field}>
+            <label className={signupStyle.label}>
+              Email
+            </label>
+
+            <div className={signupStyle.inputWrapper}>
+              <div className={signupStyle.icon}>
+                {/* <User size={18} /> */}
+              </div>
+
+              <input
+                type="text"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="procenko@gmail.com"
                 className={signupStyle.input}
               />
             </div>
@@ -158,20 +183,21 @@ export default function RegPage() {
                 className={signupStyle.input}
               />
 
-              <button
+              <Button
+                variant="password"
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className={signupStyle.passwordButton}
               >
                 {showPassword
                   ? "eyeOff" : "eye"
                 }
-              </button>
+              </Button>
             </div>
           </div>
 
           {/* SUBMIT */}
-          <button
+          <Button
+            variant="primary"
             type="submit"
             disabled={loading}
             className={signupStyle.submitButton}
@@ -179,7 +205,7 @@ export default function RegPage() {
             {loading
               ? 'Создание аккаунта...'
               : 'Зарегистрироваться'}
-          </button>
+          </Button>
         </form>
 
         {/* FOOTER */}

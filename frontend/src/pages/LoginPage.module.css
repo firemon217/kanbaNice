@@ -120,21 +120,6 @@
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
-.passwordButton {
-  position: absolute;
-
-  top: 50%;
-  right: 12px;
-
-  transform: translateY(-50%);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: color 0.2s ease;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;
