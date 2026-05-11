@@ -47,7 +47,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    console.log('Google loginStyle');
+    navigate('/oauth2/redirect');
   };
 
   return (

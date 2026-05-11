@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Button } from '../components/ui/elements/Button';
+import { Input } from '../components/ui/elements/Input';
 
 import { useAuth } from '../context/AuthContext';
 

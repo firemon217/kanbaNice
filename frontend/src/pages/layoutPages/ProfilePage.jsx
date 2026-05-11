@@ -1,7 +1,7 @@
 import profile from './ProfilePage.module.css';
 import { Button } from '../../components/ui/elements/Button';
 import { useAuth } from '../../context/AuthContext'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Modal } from '../../components/ui/Modal'
 
 export const ProfilePage = () => {
@@ -12,6 +12,21 @@ export const ProfilePage = () => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPamssword, setConfirmPassword] = useState("");    
+
+    useEffect(() => {
+        console.log(user)
+    }, [user]);
+
+
+    const roleName = (role) =>
+    {
+        switch (role)
+        {
+            case "LEADER": return "Организатор"
+            case "STANDART": return "Работник"
+            default: return role
+        }
+    }
 
     return (
         <div className={profile.page}>
@@ -36,6 +51,7 @@ export const ProfilePage = () => {
                     <Button 
                     variant="primary"
                     className={profile.editButton}>
+                    onClick={console.log(user)}
                         ✏️
                         <span>Редактировать</span>
                     </Button>
@@ -65,7 +81,7 @@ export const ProfilePage = () => {
                         </div>
                         <div>
                             <p className={profile.infoLabel}>Роль</p>
-                            <p className={profile.infoValue}>{user.userType}</p>
+                            <p className={profile.infoValue}>{roleName(user.userType)}</p>
                         </div>
                         </div>
 

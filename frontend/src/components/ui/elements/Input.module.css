@@ -1,0 +1,125 @@
+.primary {
+    margin-left: auto;
+    background: var(--color-button-primary);
+    border: 1px solid var(--color-button-primary-border);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--color-text-primary);
+}
+
+.primary:hover {
+    background: var(--color-button-primary-hover);
+}
+
+.primary:active {
+    transform: scale(0.96);
+}
+
+.primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cancel {
+    margin-left: auto;
+    background: var(--color-button-cancel);
+    border: 1px solid var(--color-button-cancel-border);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+}
+
+.cancel:hover {
+    background: var(--color-button-cancel-hover);
+}
+
+.cancel:active {
+    transform: scale(0.96);
+}
+
+.cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.delete {
+    margin-left: auto;
+    background: var(--color-button-delete);
+    border: 1px solid var(--color-button-delete-border);
+    color: var(--color-text-primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete:hover {
+    background: var(--color-button-delete-hover);
+}
+
+.delete:active {
+    transform: scale(0.96);
+}
+
+.delete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.close {
+    margin-left: auto;
+    background: var(--color-button-close);
+    border: 1px solid var(--color-button-close-border);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.close:hover {
+    background: var(--color-button-close-hover);
+}
+
+.close:active {
+    transform: scale(0.96); 
+}
+
+.close:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.password {
+    margin-left: auto;
+    background: var(--color-button-primary);
+    border: 1px solid var(--color-button-primary-border);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--color-text-primary);
+    position: absolute;
+
+    top: calc(50% - 14px);
+    right: 12px; 
+}
+
+.password:hover {
+    background: var(--color-button-primary-hover);
+}
+
+.password:active {
+    transform: scale(0.96); 
+}
+
+.password:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

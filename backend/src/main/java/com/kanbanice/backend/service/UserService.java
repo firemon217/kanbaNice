@@ -219,7 +219,7 @@ public class UserService {
                 user.getName(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getRoles(),
+                user.getUserType(),
                 user.getProviderType()
         );
     }

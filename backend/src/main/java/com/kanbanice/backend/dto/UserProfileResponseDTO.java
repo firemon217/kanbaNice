@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import com.kanbanice.backend.entity.type.UserType;
+
 import java.util.Set;
 
 @Data
@@ -16,6 +18,6 @@ public class UserProfileResponseDTO {
     private String name;
     private String username;
     private String email;
-    private Set<RoleType> roles;
+    private UserType userType;
     private AuthProviderType providerType;
 }
