@@ -7,7 +7,7 @@ import RegPage from "./pages/RegPage"
 
 // // IMPORTANT: Add this import
 import OAuthRedirect from './pages/OAuthRedirect';
-import { MainPage } from './pages/layoutPages/MainPage';
+import { CompanyPage } from './pages/layoutPages/CompanyPage';
 import { ProfilePage } from './pages/layoutPages/ProfilePage';
 
 function App() {
@@ -21,18 +21,18 @@ function App() {
     {/* Protected Routes */}
     <Route element={<PrivateRoute />}>
       <Route element={<Layout />}>
-        <Route path="/main" element={<MainPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
     </Route>
 
     <Route element={<PrivateRoute />}>
       <Route element={<Layout />}>
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/company" element={<CompanyPage />} />
       </Route>
     </Route>
 
     {/* Fallback */}
-    <Route path="*" element={<Navigate to="/main" replace />} />
+    <Route path="*" element={<Navigate to="/profile" replace />} />
   </Routes>
   );
 }

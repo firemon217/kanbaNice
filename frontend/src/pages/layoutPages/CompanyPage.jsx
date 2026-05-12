@@ -1,0 +1,73 @@
+import { useAuth } from '../../context/AuthContext';
+import { useCompany } from '../../context/CompanyContext';
+import { useEffect } from 'react';
+import { CompanyProjectCard } from '../../components/company/Company_ProjectCard';
+import { CompanyCoworkerCard } from '../../components/company/Company_CoworkerCard';
+
+import styles from './CompanyPage.module.css';
+
+export const CompanyPage = () => {
+
+    const { user } = useAuth();
+    const { company } = useCompany();
+
+    return (
+        <div className={styles.page}>
+            <div className={styles.container}>
+                {/* Header */}
+                <div className={styles.header}>
+                    <div className={styles.avatar}>
+                        {company?.charAt(0) || 'C'}
+                    </div>
+                    <div className={styles.headerInfo}>
+                        <div className={styles.name}>{company || 'Моя компания'}</div>
+                        <div className={styles.username}>{user?.email || 'user@company.com'}</div>
+                    </div>
+                    <button className={styles.editButton}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
+                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+                        </svg>
+                        Редактировать
+                    </button>
+                </div>
+
+                {/* Projects Section */}
+                <div className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Projects</h2>
+                        <div className={styles.sectionActions}>
+                            <button className={styles.iconButton}>+ Add project with tasks</button>
+                            <button className={styles.textButton}>Add CRM-project</button>
+                        </div>
+                    </div>
+
+                    {/* for */}
+                    <CompanyProjectCard></CompanyProjectCard>
+                </div>
+
+                {/* Coworkers Section */}
+                <div className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Coworkers (9)</h2>
+                        <div className={styles.sectionActions}>
+                            <button className={styles.textButton}>+ Add a user</button>
+                            <button className={styles.textButton}>Download list</button>
+                        </div>
+                    </div>
+
+                    {/* Coworkers Grid */}
+                    <div className={styles.coworkersGrid}>
+                        {/* Пример сотрудников — можно заменить на реальные данные */}
+                        <CompanyCoworkerCard></CompanyCoworkerCard>
+                        <CompanyCoworkerCard></CompanyCoworkerCard>
+                        <CompanyCoworkerCard></CompanyCoworkerCard>
+                        <div className={styles.coworkerAdd}>
+                            <button className={styles.addCoworkerBtn}>+ Добавить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

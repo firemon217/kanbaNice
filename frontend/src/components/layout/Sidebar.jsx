@@ -7,6 +7,7 @@ const NAV_ITEMS_PROFILE = [
   { path: '/profile', label: 'Профиль' },
   { path: '/subjects', label: 'Задачи' },
   { path: '/groups', label: 'Проекты' },
+  { path: '/company', label: 'Ваша Компания' },
 ];
 
 export const Sidebar = ({ isOpen, setMobileMenuOpen }) => {

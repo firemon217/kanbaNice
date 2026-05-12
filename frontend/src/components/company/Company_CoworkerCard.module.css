@@ -1,0 +1,41 @@
+
+.coworkerCard {
+  padding: 20px 16px;
+  background: #fafcfd;
+  border: 1px solid #e6edf4;
+  border-radius: 20px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.coworkerCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.1);
+  border-color: #cbdde9;
+}
+
+.coworkerAvatar {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2c5f8a, #1f4564);
+  color: white;
+  font-size: 22px;
+  font-weight: 600;
+  border-radius: 50%;
+}
+
+.coworkerName {
+  font-weight: 600;
+  color: #1a2a3f;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.coworkerRole {
+  font-size: 12px;
+  color: #5e6f8d;
+}
