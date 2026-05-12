@@ -185,18 +185,8 @@ public class UserService {
         return "Password reset successful. Please login with your new password.";
     }
 
-    public String deleteAccount(Long userId, String password) {
+    public String deleteAccount(Long userId) {
         User user = findUserById(userId);
-
-        if (user.getProviderType() == AuthProviderType.EMAIL) {
-            if (password == null || password.isBlank()) {
-                throw new IllegalArgumentException("Please provide your password to confirm deletion");
-            }
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                throw new IllegalArgumentException("Incorrect password");
-            }
-        }
-
         userRepository.delete(user);
         return "Account deleted successfully";
     }

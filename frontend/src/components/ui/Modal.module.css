@@ -40,6 +40,8 @@
   z-index: 1;
 
   animation: modalAppear 0.2s ease;
+
+  color: var(--color-primary);
 }
 
 .header {
@@ -71,6 +73,66 @@
 .content {
   padding: 24px;
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+
+  color: var(--color-text-primary);
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+
+  padding: 12px 14px 12px 44px;
+
+  background: var(--color-background);
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  color: var(--color-text-primary);
+
+  font-size: 15px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.input:hover {
+  border-color: var(--color-border-hover);
+}
+
+.input:focus {
+  outline: none;
+
+  border-color: var(--color-primary);
+
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
 
 @keyframes fadeIn {
   from {

@@ -89,9 +89,9 @@ export const AuthProvider = ({ children }) => {
     window.location.href = "/login";
   };
 
-  const changeEmail = async (email) => {
+  const changeEmail = async (newEmail) => {
     try {
-      await userService.changeEmail(email);
+      await userService.changeEmail(newEmail);
       toast.success('Ссылка для сброса пароля отправлена на вашу почту.');
       return true;
     } catch (error) {
@@ -111,6 +111,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteAccount = async() => {
+    try {
+      await userService.deleteAccount();
+      toast.success('Аккаунт удален');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Signup failed.');
+      return false;
+    }
+  }
+
   const value = {
     user,
     token,
@@ -119,7 +130,9 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     setUser,
+    changeEmail,
     forgotPassword,
+    deleteAccount,
   };
 
   return (

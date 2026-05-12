@@ -100,9 +100,9 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteAccount(@RequestParam(required = false) String password) {
+    public ResponseEntity<String> deleteAccount() {
         User user = getCurrentUser();
-        return ResponseEntity.ok(userService.deleteAccount(user.getId(), password));
+        return ResponseEntity.ok(userService.deleteAccount(user.getId()));
     }
 }
 

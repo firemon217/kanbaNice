@@ -164,14 +164,13 @@
 
 .actions {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  justify-content: right;
 }
 
 .secondaryButton,
 .dangerButton {
   height: 48px;
-
+  margin-left: 20px;
   padding: 0 18px;
   font-size: 14px;
   font-weight: 500;
