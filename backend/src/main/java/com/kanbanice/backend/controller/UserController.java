@@ -84,7 +84,7 @@ public class UserController {
         return ResponseEntity.ok(userService.resetPassword(token, newPassword));
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/profile")
     public ResponseEntity<String> deleteAccount() {
         User user = getCurrentUser();
         return ResponseEntity.ok(userService.deleteAccount(user.getId()));

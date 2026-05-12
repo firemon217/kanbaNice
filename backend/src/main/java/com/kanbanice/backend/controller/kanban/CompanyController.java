@@ -25,9 +25,15 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.createCompany(dto));
     }
 
-    @PostMapping("/workers/{userId}")
-    public ResponseEntity<Void> addWorkerToMyCompany(@PathVariable Long userId) {
-        companyService.addWorkerToMyCompany(userId);
+    @PostMapping("/workers")
+    public ResponseEntity<Void> addWorkerToMyCompany(@RequestParam String email) {
+        companyService.addWorkerToMyCompany(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/workers")
+    public ResponseEntity<Void> deleteWorkerToMyCompany(@RequestParam String email) {
+        companyService.deleteWorkerToMyCompany(email);
         return ResponseEntity.noContent().build();
     }
 

@@ -48,9 +48,16 @@ export const userService = {
   updateProfile: (name, username, email, newPassword, confirmPassword) => api.put(`/users/profile`, {name, username, email, newPassword, confirmPassword}),
   changePassword: (data) => api.put('/users/change-password', data),
   forgotPassword: (email) => api.post(`/users/forgot-password?email=${email}`),
-  deleteAccount: () => api.delete("/users/delete")
+  deleteAccount: () => api.delete("/users/profile")
 };
 
+export const companyService = {
+  getCompany: () => api.get('/company/me'),
+  createCompany: (name) => api.post(`/company`, {name}),
+  addWorkers: (email) => api.post(`/company/workers`, {email}),
+  deleteWorkers: (email) => api.delete(`/company/workers`, {email}),
+  deleteCompany: () => api.delete("/company")
+};
 
 
 export default api;
