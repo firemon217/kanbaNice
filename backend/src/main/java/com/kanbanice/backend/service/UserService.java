@@ -33,12 +33,48 @@ public class UserService {
 
     public UserProfileResponseDTO updateProfile(Long userId, UpdateProfileDto dto) {
         User user = findUserById(userId);
-        user.setName(dto.getName());
-        userRepository.save(user);
-        return mapToProfileDTO(user);
+        
+        if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
+            user.setName(dto.getName());
+        }
+        
+        if (dto.getUsername() != null && !dto.getUsername().trim().isEmpty()) {
+            if (!dto.getUsername().equals(user.getUsername()) && 
+                userRepository.existsByUsername(dto.getUsername())) {
+                throw new RuntimeException("Username already exists");
+            }
+            user.setUsername(dto.getUsername());
+        }
+        
+        if (dto.getEmail() != null && !dto.getEmail().trim().isEmpty()) {
+            if (!dto.getEmail().equals(user.getEmail()) && 
+                userRepository.existsByEmail(dto.getEmail())) {
+                throw new RuntimeException("Email already exists");
+            }
+            requestEmailChange(userId, dto.getEmail());
+        }
+        
+        if (dto.getNewPassword() != null && !dto.getNewPassword().trim().isEmpty()) {
+            if (dto.getConfirmPassword() == null || dto.getConfirmPassword().isBlank()) {
+                throw new RuntimeException("Please confirm your password");
+            }
+            
+            if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
+                throw new RuntimeException("Passwords do not match");
+            }
+            
+            if (dto.getNewPassword().length() < 6) {
+                throw new RuntimeException("Password must be at least 6 characters");
+            }
+            
+            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        }
+        
+        User updatedUser = userRepository.save(user);
+        return mapToProfileDTO(updatedUser);
     }
 
-    public String requestEmailChange(Long userId, String newEmail) {
+    public void requestEmailChange(Long userId, String newEmail) {
         User user = findUserById(userId);
 
         if (user.getProviderType() != AuthProviderType.EMAIL) {
@@ -60,11 +96,8 @@ public class UserService {
         user.setPendingEmail(newEmail);
         user.setEmailVerificationToken(token);
         user.setEmailVerificationExpiry(LocalDateTime.now().plusHours(24));
-        userRepository.save(user);
 
-        emailService.sendEmailVerificationEmail(newEmail, user.getName(), token);
-
-        return "Verification link sent to " + newEmail + ". Please verify to confirm the change.";
+        // emailService.sendEmailVerificationEmail(newEmail, user.getName(), token);
     }
 
     public String confirmEmailChange(String token) {

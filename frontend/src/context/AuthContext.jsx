@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       toast.success('Logged in successfully!');
       return true;
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      toast.error('Логин или пароль введены неправильно, проверьте их пожалуйста');
       return false;
     }
   };
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (userData) => {
     try {
       await authService.signup(userData);
-      toast.success('Signup successful! Please login.');
+      toast.success('Регистрация прошла успешно, пожалуйста, авторизируйтесь');
       return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Signup failed.');
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
       toast.success('Ссылка для сброса пароля отправлена на вашу почту.');
       return true;
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Signup failed.');
+      toast.error(error.response?.data?.message || 'Ошибка сброса пароля');
       return false;
     }
   };
@@ -89,26 +89,16 @@ export const AuthProvider = ({ children }) => {
     window.location.href = "/login";
   };
 
-  const changeEmail = async (newEmail) => {
+  const updateProfile = async (newName, newUsername, newEmail, newPassword, confirmPassword) => {
     try {
-      await userService.changeEmail(newEmail);
-      toast.success('Ссылка для сброса пароля отправлена на вашу почту.');
+      await userService.updateProfile(newName, newUsername, newEmail, newPassword, confirmPassword);
+      toast.success('Обновление прошло успешно');
       return true;
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Signup failed.');
+      toast.error(error.response?.data?.message || 'Ошибка обновления');
       return false;
     }
-  };
-
-  const changePassword= async (currentPassword, newPassword, confirmPassword) => {
-    try {
-      await userService.changePassword({currentPassword, newPassword, confirmPassword});
-      toast.success('Ссылка для сброса пароля отправлена на вашу почту.');
-      return true;
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Signup failed.');
-      return false;
-    }
+    fetchUser()
   };
 
   const deleteAccount = async() => {
@@ -117,7 +107,7 @@ export const AuthProvider = ({ children }) => {
       toast.success('Аккаунт удален');
       return true;
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Signup failed.');
+      toast.error(error.response?.data?.message || 'Ошибка удаления');
       return false;
     }
   }
@@ -130,7 +120,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     setUser,
-    changeEmail,
+    updateProfile,
     forgotPassword,
     deleteAccount,
   };

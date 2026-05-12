@@ -70,21 +70,6 @@ public class UserController {
         return ResponseEntity.ok(userService.updateProfile(user.getId(), dto));
     }
 
-    @PutMapping("/change-email")
-    public ResponseEntity<String> requestEmailChange(@RequestParam @Email @NotBlank String newEmail) {
-
-        User user = getCurrentUser();
-        return ResponseEntity.ok(userService.requestEmailChange(user.getId(), newEmail));
-    }
-
-    @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(
-            @Valid @RequestBody ChangePasswordDto dto) {
-
-        User user = getCurrentUser();
-        return ResponseEntity.ok(userService.changePassword(user.getId(), dto));
-    }
-
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestParam @Email @NotBlank String email) {
 

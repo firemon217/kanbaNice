@@ -1,7 +1,7 @@
 package com.kanbanice.backend.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Data
@@ -9,10 +9,14 @@ import lombok.*;
 @NoArgsConstructor
 public class UpdateProfileDto {
 
-    @NotBlank(message = "Name is required")
     private String name;
 
-//    @Email(message = "Invalid email")
-//    @NotBlank(message = "Email is required")
-//    private String email;
+    private String username;
+
+    @Email(message = "Invalid email")
+    private String email;
+
+    private String newPassword;
+
+    private String confirmPassword;
 }

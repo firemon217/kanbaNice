@@ -4,19 +4,24 @@ import { Button } from '../../components/ui/elements/Button';
 import { useAuth } from '../../context/AuthContext'
 import { useEffect, useState } from 'react'
 import { Modal } from '../../components/ui/Modal'
+import toast from 'react-hot-toast';
 
 export const ProfilePage = () => {
 
-    const { user, logout, deleteAccount, changeEmail } = useAuth();
+    const { user, logout, deleteAccount, updateProfile } = useAuth();
+
+    const [newName, setNewName] = useState("");
+    const [newUsername, setNewUsername] = useState("");
     const [newEmail, setNewEmail] = useState("");
     
     const [updateModalIsOpen, setUpdateModalIsOpen] = useState(false)
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
-    const [changeEmailModalIsOpen, setChangeEmailModalIsOpen] = useState(false)
 
-    const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
-    const [confirmPamssword, setConfirmPassword] = useState("");    
+    const [confirmPassword, setConfirmPassword] = useState("");    
+
+    const [showNewPassword, setShowNewPassword] = useState("");
+    const [showConfirmPassword, setShowConfirmPassword] = useState("");    
 
     const [loading, setLoading] = useState(false);
 
@@ -24,34 +29,39 @@ export const ProfilePage = () => {
         console.log(user)
     }, [user]);
 
-    const handleChangeEmail = async (e) => {
-        e.preventDefault();
-        setLoading(true)
-        try{
-            changeEmail(newEmail)
-        } 
-        catch (er) {
-            toast(er)
-        }
-        finally{
-            setLoading(false)
-            setChangeEmailModalIsOpen(false)
-        }
-    }
-
     const handleDeleteAccount = async (e) => {
         e.preventDefault();
         setLoading(true)
         try{
             deleteAccount()
-        } 
-        catch (er) {
-            toast(er)
         }
         finally{
             setLoading(false)
             setDeleteModalIsOpen(false)
             location.reload();
+        }
+    }
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        setLoading(true)
+        try{
+            if((newPassword || newPassword.trim().length > 0) && newPassword.length != 6)
+            {
+                toast.error("Новый пароль слишком короткий, минимальная длинна = 6")
+                return;
+            }
+            if(newPassword != confirmPassword)
+            {
+                toast.error("Пароли не совпадают")
+                return;
+            }
+            console.log({newName, newUsername, newEmail, newPassword, confirmPassword})
+            updateProfile(newName, newUsername, newEmail, newPassword, confirmPassword )
+        } 
+        finally{
+            setLoading(false)
+            setUpdateModalIsOpen(false)
         }
     }
 
@@ -142,11 +152,6 @@ export const ProfilePage = () => {
                     </h2>
 
                     <div className={profile.actions}>
-                        <Button variant="primary" className={profile.secondaryButton} onClick={() => setChangeEmailModalIsOpen(true)}>
-                        🔑
-                        <span>Изменить почту</span>
-                        </Button>
-
                         <Button variant="delete" className={profile.dangerButton} onClick={() => setDeleteModalIsOpen(true)}>
                         🗑️
                         <span>Удалить аккаунт</span>
@@ -159,21 +164,94 @@ export const ProfilePage = () => {
                 </div>
             </div>
 
-            <Modal isOpen={changeEmailModalIsOpen} onClose={() => setChangeEmailModalIsOpen(false)} title="Изменить почту">
-                <form className={modal.form} onSubmit={(e) => handleChangeEmail(e)}>
+            <Modal isOpen={updateModalIsOpen} onClose={() => setUpdateModalIsOpen(false)} title="Обновить пользователя">
+                <form className={modal.form} onSubmit={(e) => handleUpdateProfile(e)}>
                     <div className={modal.field}>
                         <label className={modal.label}>
-                        Email
+                            Имя
                         </label>
                         <div className={modal.inputWrapper}>
-                        <input
-                            type="email"
-                            required
-                            value={newEmail}
-                            onChange={(e) => setNewEmail(e.target.value)}
-                            placeholder="Введите ваш email"
-                            className={modal.input}
-                        />
+                            <input
+                                value={newName}
+                                onChange={(e) => setNewName(e.target.value)}
+                                placeholder="Введите ваше имя"
+                                className={modal.input}
+                            />
+                        </div>
+                    </div>
+                    <div className={modal.field}>
+                        <label className={modal.label}>
+                            Username
+                        </label>
+                        <div className={modal.inputWrapper}>
+                            <input
+                                value={newUsername}
+                                onChange={(e) => setNewUsername(e.target.value)}
+                                placeholder="Введите ваш username"
+                                className={modal.input}
+                            />
+                        </div>
+                    </div>
+                    <div className={modal.field}>
+                        <label className={modal.label}>
+                            Email
+                        </label>
+                        <div className={modal.inputWrapper}>
+                            <input
+                                type="email"
+                                value={newEmail}
+                                onChange={(e) => setNewEmail(e.target.value)}
+                                placeholder="Введите ваш email"
+                                className={modal.input}
+                            />
+                        </div>
+                    </div>
+                    <div className={modal.field}>
+                        <label className={modal.label}>
+                            Новый пароль
+                        </label>
+                        <div className={modal.inputWrapper}>
+                            <input
+                                type={showNewPassword ? 'text' : 'password'}
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className={modal.input}
+                            />
+                            <Button
+                                variant="password"
+                                type="button"
+                                onClick={() => setShowNewPassword(!showNewPassword)}
+                            >
+                                {showNewPassword
+                                ? "eyeOff"
+                                : "eye"
+                                }
+                            </Button>
+                        </div>
+                    </div>
+                    <div className={modal.field}>
+                        <label className={modal.label}>
+                            Повторите новый пароль
+                        </label>
+                        <div className={modal.inputWrapper}>
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className={modal.input}
+                            />
+                            <Button
+                                variant="password"
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword
+                                ? "eyeOff"
+                                : "eye"
+                                }
+                            </Button>
                         </div>
                     </div>
                     <Button
