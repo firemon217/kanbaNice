@@ -47,4 +47,13 @@
 
     /* Shadows (СИЛЬНО УПРОЩАЕМ) */
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+
+    /* Специфичные цвета для тостов */
+    --toast-bg: #102A20;        /* --bluegreen-700 */
+    --toast-color: #e5e7eb;     /* --gray-200 */
+    --toast-border: #1B4332;    /* --bluegreen-600 */
+    --toast-success-icon: #10B981; /* --green-500 */
+    --toast-error-icon: #FF4D4D;   /* --red-500 */
+    --toast-success-bg: rgba(16, 185, 129, 0.1);
+    --toast-error-bg: rgba(255, 77, 77, 0.1);
 }

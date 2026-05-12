@@ -38,8 +38,8 @@ export const ProfilePage = () => {
         finally{
             setLoading(false)
             setDeleteModalIsOpen(false)
-            location.reload();
         }
+        location.reload();  
     }
 
     const handleUpdateProfile = async (e) => {
@@ -63,6 +63,7 @@ export const ProfilePage = () => {
             setLoading(false)
             setUpdateModalIsOpen(false)
         }
+        location.reload();  
     }
 
     const roleName = (role) =>

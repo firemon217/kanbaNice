@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
       setToken(accessToken); // triggers fetchUser
 
-      toast.success('Logged in successfully!');
+      toast.success('Добро пожаловать');
       return true;
     } catch (error) {
       toast.error('Логин или пароль введены неправильно, проверьте их пожалуйста');

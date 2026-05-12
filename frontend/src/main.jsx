@@ -14,23 +14,23 @@ createRoot(document.getElementById('root')).render(
       <Providers>
         <App />
         <Toaster
-          position="top-right"
+          position="bottom-right"
           toastOptions={{
             duration: 3000,
             style: {
               background: '#102A20',
               color: '#e5e7eb',
-              border: '1px solid #1B4332',
+              border: '1px solid #236e4f',
             },
             success: {
               iconTheme: {
-                primary: '#10B981',
+                primary: '#1f614b',
                 secondary: '#fff',
               },
             },
             error: {
               iconTheme: {
-                primary: '#FF4D4D',
+                primary: '#8f2a2a',
                 secondary: '#fff',
               },
             },
