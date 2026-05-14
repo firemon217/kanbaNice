@@ -2,16 +2,15 @@ import { createContext, useState, useContext, useEffect } from 'react';
 import { authService, userService } from '../api';
 import toast from 'react-hot-toast';
 
-const AuthContext = createContext();
+const UserContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export const useUser = () => useContext(UserContext);
 
-export const AuthProvider = ({ children }) => {
+export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('accessToken'));
   const [loading, setLoading] = useState(true);
 
-  // Sync token with localStorage (important for OAuth)
   useEffect(() => {
     const storedToken = localStorage.getItem('accessToken');
     if (storedToken && storedToken !== token) {
@@ -19,7 +18,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Fetch user when token changes
   useEffect(() => {
     const fetchUser = async () => {
       if (token) {
@@ -49,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('userId', userId);
 
-      setToken(accessToken); // triggers fetchUser
+      setToken(accessToken);
 
       toast.success('Добро пожаловать');
       return true;
@@ -126,7 +124,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <UserContext.Provider value={value}>
       {loading ? (
         <div className="">
           Loading...
@@ -134,6 +132,6 @@ export const AuthProvider = ({ children }) => {
       ) : (
         children
       )}
-    </AuthContext.Provider>
+    </UserContext.Provider>
   );
 };

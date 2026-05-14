@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/elements/Button';
-import { useAuth } from '../context/AuthContext';
+import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../components/ui/Modal';
 
 import loginStyle from './LoginPage.module.css';
 
 export default function LoginPage() {
-  const { login, forgotPassword } = useAuth();
+  const { login, forgotPassword } = useUser();
   const navigate = useNavigate();
 
   const [showForgotPassword, setShowForgotPassword] = useState(false);

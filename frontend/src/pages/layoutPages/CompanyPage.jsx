@@ -1,4 +1,4 @@
-import { useAuth } from '../../context/AuthContext';
+import { useUser } from '../../context/UserContext';
 import { useCompany } from '../../context/CompanyContext';
 import { useEffect, useState } from 'react';
 import { CompanyProjectCard } from '../../components/company/Company_ProjectCard';
@@ -12,7 +12,7 @@ import styles from './CompanyPage.module.css';
 
 export const CompanyPage = () => {
 
-    const { user } = useAuth();
+    const { user } = useUser();
     const { company, createCompany } = useCompany();
 
     const [companyName, setCompanyName] = useState('');

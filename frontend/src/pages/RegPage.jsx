@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Button } from '../components/ui/elements/Button';
 import { Input } from '../components/ui/elements/Input';
 
-import { useAuth } from '../context/AuthContext';
+import { useUser } from '../context/UserContext';
 
 import signupStyle from './RegPage.module.css';
 
@@ -18,7 +18,7 @@ export default function RegPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const { signup } = useAuth();
+  const { signup } = useUser();
 
   const navigate = useNavigate();
 

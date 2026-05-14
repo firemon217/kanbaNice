@@ -1,12 +1,12 @@
-import { AuthProvider } from "./context/AuthContext";
 import { CompanyProvider } from "./context/CompanyContext";
+import { UserProvider } from "./context/UserContext";
 
 export const Providers = ({ children }) => {
   return (
-    <AuthProvider>
+    <UserProvider>
       <CompanyProvider>        
         {children}
       </CompanyProvider>
-    </AuthProvider>
+    </UserProvider>
   );
 };

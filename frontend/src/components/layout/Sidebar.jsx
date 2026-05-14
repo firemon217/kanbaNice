@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 
 import sidebar from './Sidebar.module.css';
 
@@ -11,8 +10,6 @@ const NAV_ITEMS_PROFILE = [
 ];
 
 export const Sidebar = ({ isOpen, setMobileMenuOpen }) => {
-  const { user, logout } = useAuth();
-
   return (
     <div className={sidebar.container}>
         <header className={sidebar.header}>

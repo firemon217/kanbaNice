@@ -1,14 +1,14 @@
 import profile from './ProfilePage.module.css';
 import modal from '../../components/ui/Modal.module.css'
 import { Button } from '../../components/ui/elements/Button';
-import { useAuth } from '../../context/AuthContext'
+import { useUser } from '../../context/UserContext'
 import { useEffect, useState } from 'react'
 import { Modal } from '../../components/ui/Modal'
 import toast from 'react-hot-toast';
 
 export const ProfilePage = () => {
 
-    const { user, logout, deleteAccount, updateProfile } = useAuth();
+    const { user, logout, deleteAccount, updateProfile } = useUser();
 
     const [newName, setNewName] = useState("");
     const [newUsername, setNewUsername] = useState("");

@@ -1,14 +1,14 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { companyService } from '../api';
 import toast from 'react-hot-toast';
-import { useAuth } from './AuthContext';
+import { useUser } from './UserContext';
 
 const CompanyContext = createContext();
 
 export const useCompany = () => useContext(CompanyContext);
 
 export const CompanyProvider = ({ children }) => {
-  const { token } = useAuth();  
+  const { token } = useUser();  
 
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
