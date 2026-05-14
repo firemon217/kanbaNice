@@ -83,16 +83,16 @@ export const ProfilePage = () => {
                 {/* HEADER */}
                 <div className={profile.header}>
                     <div className={profile.avatar}>
-                        {user.username[0].toUpperCase()}
+                        {user?.username[0].toUpperCase()}
                     </div>
 
                     <div className={profile.headerInfo}>
                         <h1 className={profile.name}>
-                            {user.name}  
+                            {user?.name}  
                         </h1>
 
                         <p className={profile.username}>
-                            {user.username}  
+                            {user?.username}  
                         </p>
                     </div>
 
@@ -119,7 +119,7 @@ export const ProfilePage = () => {
                         </div>
                         <div>
                             <p className={profile.infoLabel}>Email</p>
-                            <p className={profile.infoValue}>{user.email}</p>
+                            <p className={profile.infoValue}>{user?.email}</p>
                         </div>
                         </div>
 
@@ -129,7 +129,7 @@ export const ProfilePage = () => {
                         </div>
                         <div>
                             <p className={profile.infoLabel}>Роль</p>
-                            <p className={profile.infoValue}>{roleName(user.userType)}</p>
+                            <p className={profile.infoValue}>{roleName(user?.userType)}</p>
                         </div>
                         </div>
 

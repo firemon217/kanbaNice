@@ -1,15 +1,41 @@
 import { useAuth } from '../../context/AuthContext';
 import { useCompany } from '../../context/CompanyContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { CompanyProjectCard } from '../../components/company/Company_ProjectCard';
 import { CompanyCoworkerCard } from '../../components/company/Company_CoworkerCard';
+
+import { Modal } from '../../components/ui/Modal';
+import modal from '../../components/ui/Modal.module.css'
+import { Button } from '../../components/ui/elements/Button'
 
 import styles from './CompanyPage.module.css';
 
 export const CompanyPage = () => {
 
     const { user } = useAuth();
-    const { company } = useCompany();
+    const { company, createCompany } = useCompany();
+
+    const [companyName, setCompanyName] = useState('');
+
+    const [loading, setLoading] = useState(false)
+    const [createCompanyModalIsOpen, setCreateCompanyModalIsOpen] = useState(false);
+
+    const handleCreateCompany = (e) =>
+    {
+        e.preventDefault()
+        setLoading(true)
+        try{
+            createCompany(companyName)
+        }
+        finally{
+            setCreateCompanyModalIsOpen(false)
+        }
+        setLoading(false)
+    }
+
+    useEffect (()=>{
+        console.log(user)
+    }, [user])
 
     return (
         <div className={styles.page}>
@@ -17,21 +43,30 @@ export const CompanyPage = () => {
                 {/* Header */}
                 <div className={styles.header}>
                     <div className={styles.avatar}>
-                        {company?.charAt(0) || 'C'}
+                        {company?.name.charAt(0)}
                     </div>
                     <div className={styles.headerInfo}>
-                        <div className={styles.name}>{company || 'Моя компания'}</div>
-                        <div className={styles.username}>{user?.email || 'user@company.com'}</div>
+                        <div className={styles.name}>{company ? company.name : user.userType == "LEADER" ? "Создайте компанию" : "Вы не принадлижите ни одной компании"}</div>
                     </div>
-                    <button className={styles.editButton}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
-                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
-                        </svg>
-                        Редактировать
-                    </button>
+                    <Button variant={!company ? "primary" : ""} className={company ? styles.editButton : ""} onClick={!company ? () => setCreateCompanyModalIsOpen(true) : ""}>
+                        {company &&
+                            <>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
+                                    <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+                                </svg>
+                                Редактировать
+                            </>
+                        }
+                        {!company &&
+                            <>
+                                Зарегистрировать компанию
+                            </>
+                        }
+                    </Button>
                 </div>
-
+            {company && 
+                <>
                 {/* Projects Section */}
                 <div className={styles.section}>
                     <div className={styles.sectionHeader}>
@@ -67,7 +102,32 @@ export const CompanyPage = () => {
                         </div>
                     </div>
                 </div>
+            </>
+            }
             </div>
+
+            <Modal isOpen={createCompanyModalIsOpen} onClose={() => setCreateCompanyModalIsOpen(false)} title="Создать компанию">
+                <form className={modal.form} onSubmit={(e) => handleCreateCompany(e)}>
+                    <div className={modal.inputWrapper}>
+                        <lable className={modal.field}>
+                            Название компании
+                        </lable>
+                        <input                             
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            placeholder="Введите название компании"
+                            className={modal.input}
+                        />
+                    </div>
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? 'Создание...' : 'Создать'}
+                    </Button>
+                </form>
+            </Modal>
         </div>
     );
 };
