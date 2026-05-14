@@ -46,6 +46,18 @@ export const CompanyProvider = ({ children }) => {
     return true;
   };
 
+  const updateCompany = async (name) => {
+    try {
+      await companyService.updateCompany(name);
+      toast.success('Редактирование прошло успешно');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Ошибка редактирования');
+      return false;
+    }
+    fetchCompany()
+    return true;
+  };
+
   const addWorker = async (email) => {
     try {
       await companyService.addWorkers(email);
@@ -87,7 +99,8 @@ export const CompanyProvider = ({ children }) => {
     createCompany,
     addWorker,
     deleteWorker,
-    deleteCompany
+    deleteCompany,
+    updateCompany
   };
 
   return (

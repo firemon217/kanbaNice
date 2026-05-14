@@ -56,7 +56,8 @@ export const companyService = {
   createCompany: (name) => api.post(`/company`, {name}),
   addWorkers: (email) => api.post(`/company/workers`, {email}),
   deleteWorkers: (id) => api.delete(`/company/workers/${id}`),
-  deleteCompany: () => api.delete("/company")
+  deleteCompany: () => api.delete("/company"),
+  updateCompany: (name) => api.put('/company', {name})
 };
 
 

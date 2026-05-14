@@ -16,7 +16,7 @@ export const CompanyPage = () => {
       const navigate = useNavigate();
 
     const { user } = useUser();
-    const { company, createCompany, addWorker, deleteWorker, deleteCompany } = useCompany();
+    const { company, createCompany, addWorker, deleteWorker, deleteCompany, updateCompany } = useCompany();
 
     const [companyName, setCompanyName] = useState('');
     const [emailWorker, setEmailWorker] = useState('')
@@ -25,6 +25,7 @@ export const CompanyPage = () => {
 
     const [loading, setLoading] = useState(false)
     const [createCompanyModalIsOpen, setCreateCompanyModalIsOpen] = useState(false);
+    const [updateCompanyModalIsOpen, setUpdateCompanyModalIsOpen] = useState(false);
     const [addWorkerModalIsOpen, setAddWorkerModalIsOpen] = useState(false);
     const [deleteWorkerModalIsOpen, setDeleteWorkerModalIsOpen] = useState(false);
     const [deleteCompanyModalIsOpen, setDeleteCompanyModalIsOpen] = useState(false);
@@ -38,6 +39,19 @@ export const CompanyPage = () => {
         }
         finally{
             setCreateCompanyModalIsOpen(false)
+            setLoading(false)
+        }
+    }
+
+    const handleUpdateCompany = async (e) =>
+    {
+        e.preventDefault()
+        setLoading(true)
+        try{
+            await updateCompany(companyName)
+        }
+        finally{
+            setUpdateCompanyModalIsOpen(false)
             setLoading(false)
         }
     }
@@ -98,7 +112,7 @@ export const CompanyPage = () => {
                     </div>
                     {user.userType == "LEADER" &&
                     <>
-                    <Button variant={!company ? "primary" : ""} className={company ? styles.editButton : ""} onClick={!company ? () => setCreateCompanyModalIsOpen(true) : undefined}>
+                    <Button variant={!company ? "primary" : ""} className={company ? styles.editButton : ""} onClick={company ? () => setUpdateCompanyModalIsOpen(true) : setCreateCompanyModalIsOpen(true)}>
                         {company &&
                             <>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -183,6 +197,29 @@ export const CompanyPage = () => {
                         disabled={loading}
                     >
                         {loading ? 'Создание...' : 'Создать'}
+                    </Button>
+                </form>
+            </Modal>
+
+            <Modal isOpen={updateCompanyModalIsOpen} onClose={() => setUpdateCompanyModalIsOpen(false)} title="Редактировать компанию">
+                <form className={modal.form} onSubmit={(e) => handleUpdateCompany(e)}>
+                    <div className={modal.inputWrapper}>
+                        <lable className={modal.field}>
+                            Название компании
+                        </lable>
+                        <input                             
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            placeholder="Введите название компании"
+                            className={modal.input}
+                        />
+                    </div>
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? 'Редактирование...' : 'Редактировать'}
                     </Button>
                 </form>
             </Modal>

@@ -2,6 +2,7 @@ package com.kanbanice.backend.service.kanban;
 
 import com.kanbanice.backend.dto.kanban.CompanyCreateDTO;
 import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
+import com.kanbanice.backend.dto.kanban.CompanyUpdateDTO;
 import com.kanbanice.backend.dto.kanban.WorkerRequestDTO;
 import com.kanbanice.backend.dto.UserResponseDTO;
 import com.kanbanice.backend.Repository.UserRepository;
@@ -144,7 +145,7 @@ public class CompanyService {
     }
 
     @Transactional
-    public CompanyResponseDTO updateMyCompany(String name) {
+    public CompanyResponseDTO updateMyCompany(CompanyUpdateDTO dto) {
         User currentUser = currentUserUtil.getCurrentUser();
         if (currentUser.getUserType() != UserType.LEADER) {
             throw new IllegalStateException("Only LEADER can update company");
@@ -155,7 +156,7 @@ public class CompanyService {
 
         Company company = companyRepository.findById(currentUser.getCompany().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
-        company.setName(name);
+        company.setName(dto.name());
         Company savedCompany = companyRepository.save(company);
 
         List<User> companyUsers = userRepository.findAllByCompany_Id(company.getId());

@@ -1,6 +1,7 @@
 package com.kanbanice.backend.controller.kanban;
 
 import com.kanbanice.backend.dto.kanban.CompanyCreateDTO;
+import com.kanbanice.backend.dto.kanban.CompanyUpdateDTO;
 import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
 import com.kanbanice.backend.dto.kanban.WorkerRequestDTO;
 import com.kanbanice.backend.service.kanban.CompanyService;
@@ -39,8 +40,8 @@ public class CompanyController {
     }
 
     @PutMapping
-    public ResponseEntity<CompanyResponseDTO> updateMyCompany(@RequestBody String name) {
-        return ResponseEntity.ok(companyService.updateMyCompany(name));
+    public ResponseEntity<CompanyResponseDTO> updateMyCompany( @RequestBody CompanyUpdateDTO dto) {
+        return ResponseEntity.ok(companyService.updateMyCompany(dto));
     }
 
     @DeleteMapping
