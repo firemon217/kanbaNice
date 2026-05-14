@@ -2,6 +2,7 @@ package com.kanbanice.backend.controller.kanban;
 
 import com.kanbanice.backend.dto.kanban.CompanyCreateDTO;
 import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
+import com.kanbanice.backend.dto.kanban.WorkerRequestDTO;
 import com.kanbanice.backend.service.kanban.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @GetMapping("/me")
+    @GetMapping
     public ResponseEntity<CompanyResponseDTO> getMyCompany() {
         return ResponseEntity.ok(companyService.getMyCompany());
     }
@@ -26,19 +27,19 @@ public class CompanyController {
     }
 
     @PostMapping("/workers")
-    public ResponseEntity<Void> addWorkerToMyCompany(@RequestParam String email) {
-        companyService.addWorkerToMyCompany(email);
+    public ResponseEntity<Void> addWorkerToMyCompany(@RequestBody WorkerRequestDTO dto) {
+        companyService.addWorkerToMyCompany(dto);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/workers")
-    public ResponseEntity<Void> deleteWorkerToMyCompany(@RequestParam String email) {
-        companyService.deleteWorkerToMyCompany(email);
+    @DeleteMapping("/workers/{id}")
+    public ResponseEntity<Void> deleteWorkerToMyCompany(@PathVariable Long id) {
+        companyService.deleteWorkerToMyCompany(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping
-    public ResponseEntity<CompanyResponseDTO> updateMyCompany(@RequestParam String name) {
+    public ResponseEntity<CompanyResponseDTO> updateMyCompany(@RequestBody String name) {
         return ResponseEntity.ok(companyService.updateMyCompany(name));
     }
 

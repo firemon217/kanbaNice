@@ -2,6 +2,7 @@ package com.kanbanice.backend.service.kanban;
 
 import com.kanbanice.backend.dto.kanban.CompanyCreateDTO;
 import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
+import com.kanbanice.backend.dto.kanban.WorkerRequestDTO;
 import com.kanbanice.backend.dto.UserResponseDTO;
 import com.kanbanice.backend.Repository.UserRepository;
 import com.kanbanice.backend.entity.Company;
@@ -67,7 +68,8 @@ public class CompanyService {
             .map(user -> new UserResponseDTO(
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getUserType()
             ))
             .collect(Collectors.toList());
         
@@ -79,7 +81,7 @@ public class CompanyService {
     }
 
     @Transactional
-    public void addWorkerToMyCompany(String email) {
+    public void addWorkerToMyCompany(WorkerRequestDTO dto) {
         User currentUser = currentUserUtil.getCurrentUser();
         if (currentUser.getUserType() != UserType.LEADER) {
             throw new IllegalStateException("Only LEADER can add workers to company");
@@ -90,7 +92,7 @@ public class CompanyService {
             throw new IllegalStateException("Leader has no company");
         }
 
-        User worker = userRepository.findByEmail(email)
+        User worker = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if (worker.getUserType() != UserType.WORKER) {
@@ -109,7 +111,7 @@ public class CompanyService {
     }
 
     @Transactional
-    public void deleteWorkerToMyCompany(String email) {
+    public void deleteWorkerToMyCompany(Long id) {
         User currentUser = currentUserUtil.getCurrentUser();
         if (currentUser.getUserType() != UserType.LEADER) {
             throw new IllegalStateException("Only LEADER can delete workers to company");
@@ -120,7 +122,7 @@ public class CompanyService {
             throw new IllegalStateException("Leader has no company");
         }
 
-        User worker = userRepository.findByEmail(email)
+        User worker = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if (worker.getUserType() != UserType.WORKER) {
@@ -162,7 +164,8 @@ public class CompanyService {
             .map(user -> new UserResponseDTO(
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getUserType()
             ))
             .collect(Collectors.toList());
         

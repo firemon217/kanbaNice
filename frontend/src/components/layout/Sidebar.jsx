@@ -4,8 +4,8 @@ import sidebar from './Sidebar.module.css';
 
 const NAV_ITEMS_PROFILE = [
   { path: '/profile', label: 'Профиль' },
-  { path: '/subjects', label: 'Задачи' },
-  { path: '/groups', label: 'Проекты' },
+  { path: '/project/tasks', label: 'Задачи' },
+  { path: '/projects', label: 'Проекты' },
   { path: '/company', label: 'Ваша Компания' },
 ];
 

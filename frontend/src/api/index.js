@@ -52,10 +52,10 @@ export const userService = {
 };
 
 export const companyService = {
-  getCompany: () => api.get('/company/me'),
+  getCompany: () => api.get('/company'),
   createCompany: (name) => api.post(`/company`, {name}),
   addWorkers: (email) => api.post(`/company/workers`, {email}),
-  deleteWorkers: (email) => api.delete(`/company/workers`, {email}),
+  deleteWorkers: (id) => api.delete(`/company/workers/${id}`),
   deleteCompany: () => api.delete("/company")
 };
 

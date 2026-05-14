@@ -9,33 +9,81 @@ import modal from '../../components/ui/Modal.module.css'
 import { Button } from '../../components/ui/elements/Button'
 
 import styles from './CompanyPage.module.css';
+import { useNavigate } from 'react-router-dom';
 
 export const CompanyPage = () => {
 
+      const navigate = useNavigate();
+
     const { user } = useUser();
-    const { company, createCompany } = useCompany();
+    const { company, createCompany, addWorker, deleteWorker, deleteCompany } = useCompany();
 
     const [companyName, setCompanyName] = useState('');
+    const [emailWorker, setEmailWorker] = useState('')
+
+    const [currentWorkerId, setCurrentWorkerId] = useState('')
 
     const [loading, setLoading] = useState(false)
     const [createCompanyModalIsOpen, setCreateCompanyModalIsOpen] = useState(false);
+    const [addWorkerModalIsOpen, setAddWorkerModalIsOpen] = useState(false);
+    const [deleteWorkerModalIsOpen, setDeleteWorkerModalIsOpen] = useState(false);
+    const [deleteCompanyModalIsOpen, setDeleteCompanyModalIsOpen] = useState(false);
 
-    const handleCreateCompany = (e) =>
+    const handleCreateCompany = async (e) =>
     {
         e.preventDefault()
         setLoading(true)
         try{
-            createCompany(companyName)
+            await createCompany(companyName)
         }
         finally{
             setCreateCompanyModalIsOpen(false)
+            setLoading(false)
         }
-        setLoading(false)
     }
 
-    useEffect (()=>{
-        console.log(user)
-    }, [user])
+    const handleAddWorker = async (e) => 
+    {
+        e.preventDefault()
+        setLoading(true)
+        try{
+            await addWorker(emailWorker)
+            setEmailWorker("")
+        }
+        finally{
+            setAddWorkerModalIsOpen(false)
+            setEmailWorker("")
+            setLoading(false)
+        }
+    }
+
+    const handleDeleteWorker = async (e) =>
+    {
+        e.preventDefault()
+        setLoading(true)
+        try{
+            await deleteWorker(currentWorkerId)
+        }
+        finally{
+            setDeleteWorkerModalIsOpen(false)
+            setCurrentWorkerId('')
+            setLoading(false)
+        }
+    }
+
+    const handleDeleteCompany = async (e) =>
+    {
+        e.preventDefault()
+        setLoading(true)
+        try{
+            await deleteCompany()
+        }
+        finally{
+            setDeleteCompanyModalIsOpen(false)
+            setLoading(false)
+        }
+        navigate("/profile") 
+    }
 
     return (
         <div className={styles.page}>
@@ -48,7 +96,9 @@ export const CompanyPage = () => {
                     <div className={styles.headerInfo}>
                         <div className={styles.name}>{company ? company.name : user.userType == "LEADER" ? "Создайте компанию" : "Вы не принадлижите ни одной компании"}</div>
                     </div>
-                    <Button variant={!company ? "primary" : ""} className={company ? styles.editButton : ""} onClick={!company ? () => setCreateCompanyModalIsOpen(true) : ""}>
+                    {user.userType == "LEADER" &&
+                    <>
+                    <Button variant={!company ? "primary" : ""} className={company ? styles.editButton : ""} onClick={!company ? () => setCreateCompanyModalIsOpen(true) : undefined}>
                         {company &&
                             <>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -64,6 +114,13 @@ export const CompanyPage = () => {
                             </>
                         }
                     </Button>
+                    {company &&
+                        <Button className={styles.editButton} onClick={() => setDeleteCompanyModalIsOpen(true)}>
+                            Удалить компанию
+                        </Button>
+                    }
+                    </>
+                    }
                 </div>
             {company && 
                 <>
@@ -77,29 +134,30 @@ export const CompanyPage = () => {
                         </div>
                     </div>
 
-                    {/* for */}
                     <CompanyProjectCard></CompanyProjectCard>
                 </div>
 
-                {/* Coworkers Section */}
                 <div className={styles.section}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>Coworkers (9)</h2>
+                        {user.userType == "LEADER" &&
                         <div className={styles.sectionActions}>
-                            <button className={styles.textButton}>+ Add a user</button>
-                            <button className={styles.textButton}>Download list</button>
+                            <Button className={styles.textButton} onClick={() => setAddWorkerModalIsOpen(true)}>+ Add a user</Button>
                         </div>
+                        }
                     </div>
 
-                    {/* Coworkers Grid */}
                     <div className={styles.coworkersGrid}>
-                        {/* Пример сотрудников — можно заменить на реальные данные */}
-                        <CompanyCoworkerCard></CompanyCoworkerCard>
-                        <CompanyCoworkerCard></CompanyCoworkerCard>
-                        <CompanyCoworkerCard></CompanyCoworkerCard>
-                        <div className={styles.coworkerAdd}>
-                            <button className={styles.addCoworkerBtn}>+ Добавить</button>
-                        </div>
+                        {company?.users.map(worker => {
+                            return <CompanyCoworkerCard key={worker.id} name={worker.name} email={worker.email} onClick={worker.userType != "LEADER" && user.userType == "LEADER" ? ()=>{
+                                    setCurrentWorkerId(worker.id)
+                                    setDeleteWorkerModalIsOpen(true);
+                                }
+                                :
+                                undefined
+                            }></CompanyCoworkerCard>
+                            })
+                        }
                     </div>
                 </div>
             </>
@@ -125,6 +183,63 @@ export const CompanyPage = () => {
                         disabled={loading}
                     >
                         {loading ? 'Создание...' : 'Создать'}
+                    </Button>
+                </form>
+            </Modal>
+
+            <Modal isOpen={addWorkerModalIsOpen} onClose={() => setAddWorkerModalIsOpen(false)} title="Добавить сотрудника">
+                <form className={modal.form} onSubmit={(e) => handleAddWorker(e)}>
+                    <div className={modal.inputWrapper}>
+                        <lable className={modal.field}>
+                            E-mail сотрудника
+                        </lable>
+                        <input                             
+                            value={emailWorker}
+                            onChange={(e) => setEmailWorker(e.target.value)}
+                            placeholder="Введите email сотрудника"
+                            className={modal.input}
+                        />
+                    </div>
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? 'Добавление...' : 'Добавить'}
+                    </Button>
+                </form>
+            </Modal>
+
+            <Modal isOpen={deleteWorkerModalIsOpen} onClose={() => {
+                    setDeleteWorkerModalIsOpen(false);
+                }} title="Удалить сотрудника">
+                <form className={modal.form} onSubmit={(e) => handleDeleteWorker(e)}>
+                    <div className={modal.lable}>
+                        Вы уверены, что хотите удалить сотрудника?
+                    </div>
+                    <Button
+                        variant="delete"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? 'Удаление...' : 'Удалить'}
+                    </Button>
+                </form>
+            </Modal>
+
+            <Modal isOpen={deleteCompanyModalIsOpen} onClose={() => {
+                    setDeleteCompanyModalIsOpen(false);
+                }} title="Удалить компанию">
+                <form className={modal.form} onSubmit={(e) => handleDeleteCompany(e)}>
+                    <div className={modal.lable}>
+                        Вы уверены, что хотите удалить компанию?
+                    </div>
+                    <Button
+                        variant="delete"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? 'Удаление...' : 'Удалить'}
                     </Button>
                 </form>
             </Modal>

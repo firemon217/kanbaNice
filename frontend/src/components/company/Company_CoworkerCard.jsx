@@ -1,12 +1,12 @@
 import styles from "./Company_CoworkerCard.module.css"
 
-export const CompanyCoworkerCard = ({  }) => {
+export const CompanyCoworkerCard = ({ name, email, ...params }) => {
 
     return (
-        <div className={styles.coworkerCard}>
-            <div className={styles.coworkerAvatar}>М</div>
-            <div className={styles.coworkerName}>Максим Орлов</div>
-            <div className={styles.coworkerRole}>Разработчик</div>
+        <div className={styles.coworkerCard} {...params}>
+            <div className={styles.coworkerAvatar}>{name?.charAt(0)}</div>
+            <div className={styles.coworkerName}>{name}</div>
+            <div className={styles.coworkerRole}>{email}</div>
         </div>
     );
 }

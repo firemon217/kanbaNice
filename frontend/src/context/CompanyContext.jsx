@@ -13,24 +13,24 @@ export const CompanyProvider = ({ children }) => {
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCompany = async () => {
-      if (token) {
-        try {
-          const res = await companyService.getCompany();
-          setCompany(res.data);
-        } catch (error) {
-          console.error('Error fetching company data', error);
-          if (error.response?.status === 401) {
-            logout();
-          }
+  const fetchCompany = async () => {
+    if (token) {
+      try {
+        const res = await companyService.getCompany();
+        setCompany(res.data);
+      } catch (error) {
+        console.error('Error fetching company data', error);
+        if (error.response?.status === 401) {
+          logout();
         }
-      } else {
-        setCompany(null);
       }
-      setLoading(false);
-    };
+    } else {
+      setCompany(null);
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     fetchCompany();
   }, [token]);
 
@@ -38,55 +38,55 @@ export const CompanyProvider = ({ children }) => {
     try {
       await companyService.createCompany(name);
       toast.success('Создание прошло успешно');
-      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка создания');
       return false;
     }
     fetchCompany()
+    return true;
   };
 
-  const addWorkers = async (email) => {
+  const addWorker = async (email) => {
     try {
       await companyService.addWorkers(email);
       toast.success('Работник добавлен успешно');
-      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка добавления нового работника');
       return false;
     }
     fetchCompany()
+    return true;  
   };
 
-  const deleteWorkers = async(email) => {
+  const deleteWorker = async(id) => {
     try {
-      await companyService.deleteWorkers(email);
+      await companyService.deleteWorkers(id);
       toast.success('Работник удален успешно');
-      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка удаления работника');
       return false;
     }
     fetchCompany()
+    return true;  
   };
 
   const deleteCompany = async() => {
     try {
       await companyService.deleteCompany();
       toast.success('Компания удалена успешно');
-      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка удаления компании');
       return false;
     }
     fetchCompany()
+    return true;    
   };
 
   const value = {
     company,
     createCompany,
-    addWorkers,
-    deleteWorkers,
+    addWorker,
+    deleteWorker,
     deleteCompany
   };
 
