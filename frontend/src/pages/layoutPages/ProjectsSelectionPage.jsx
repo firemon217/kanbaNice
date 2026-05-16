@@ -1,57 +1,80 @@
 import { useProject } from '../../context/ProjectContext';
+import { useCompany } from '../../context/CompanyContext';
 import { useState } from 'react';
 
 import { ProjectCard } from '../../components/projects/ProjectCard'; 
+import { CompanyCoworkerCard } from '../../components/company/Company_CoworkerCard';
 
 import { Modal } from '../../components/ui/Modal';
 import { Button } from '../../components/ui/elements/Button';
+import toast from 'react-hot-toast';
 
 import modal from '../../components/ui/Modal.module.css';
-import styles from './ProjectsPage.module.css';
+import styles from './ProjectsSelectionPage.module.css';
 
-export const ProjectsPage = () => {
+export const ProjectsSelectionPage = () => {
+
+    const {
+        company
+    } = useCompany();
+
     const {
         projects,
         createProjects,
         deleteProject,
+        addWorkerInProject,
         chooseCurrentProject,
     } = useProject();
 
     const [projectName, setProjectName] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedProjectId, setSelectedProjectId] = useState(null);
-
+    const [selectedProjectId, setSelectedProjectId] = useState('');
+    
+    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+    const [addWorkerModalIsOpen, setAddWorkerModalIsOpen] = useState(false);
+ 
     const handleCreateProject = async (e) => {
         e.preventDefault();
-
-        if (!projectName.trim()) return;
-
         setLoading(true);
-
-        const success = await createProjects(projectName);
-
-        if (success) {
-            setProjectName('');
+        try{
+            if (!projectName.trim()) 
+            {
+                toast.error("Введите имя проекта");
+                throw Error;
+            }
+            const success = await createProjects(projectName);
         }
-
-        setLoading(false);
+        finally{
+            setProjectName('');
+            setLoading(false);
+        }
     };
 
     const handleDeleteProject = async (e) => {
         e.preventDefault();
-
         setLoading(true);
-
-        const success = await deleteProject(selectedProjectId);
-
-        if (success) {
-            setDeleteModalOpen(false);
-            setSelectedProjectId(null);
+        try{    
+            await deleteProject(selectedProjectId);
         }
-
-        setLoading(false);
+        finally {
+            setDeleteModalIsOpen(false);
+            setSelectedProjectId('');
+            setLoading(false);
+        }
+    };
+    
+    const handleAddWorkerInProject = async (e, id) => {
+        e.preventDefault();
+        setLoading(true);
+        try{
+            await addWorkerInProject(selectedProjectId, id);
+        }
+        finally {
+            setAddWorkerModalIsOpen(false);
+            setSelectedProjectId('');
+            setLoading(false);
+        }
     };
 
     return (
@@ -101,9 +124,14 @@ export const ProjectsPage = () => {
                     ) : (
                         <div className={styles.projectsList}>
                             {projects?.map((project) => (
-                                <ProjectCard key={project.id} id={project.is} name={project.name} OnOpen={() => chooseCurrentProject(project.id)} onDelete={() => {
+                                <ProjectCard key={project.id} id={project.is} name={project.name} 
+                                onAddWorker={() => {
                                     setSelectedProjectId(project.id);
-                                    setDeleteModalOpen(true);
+                                    setAddWorkerModalIsOpen(true)
+                                }} 
+                                OnOpen={() => chooseCurrentProject(project.id)} onDelete={() => {
+                                    setSelectedProjectId(project.id);
+                                    setDeleteModalIsOpen(true);
                                 }}>
                                 </ProjectCard>
                             ))}
@@ -114,9 +142,9 @@ export const ProjectsPage = () => {
             </div>
 
             <Modal
-                isOpen={deleteModalOpen}
+                isOpen={deleteModalIsOpen}
                 onClose={() => {
-                    setDeleteModalOpen(false);
+                    setDeleteModalIsOpen(false);
                 }}
                 title="Удалить проект"
             >
@@ -139,27 +167,25 @@ export const ProjectsPage = () => {
             </Modal>
 
             <Modal
-                isOpen={deleteModalOpen}
+                isOpen={addWorkerModalIsOpen}
                 onClose={() => {
-                    setDeleteModalOpen(false);
+                    setAddWorkerModalIsOpen(false);
                 }}
-                title="Удалить проект"
+                title="Кого добавить в проект?"
             >
                 <form
                     className={modal.form}
-                    onSubmit={handleDeleteProject}
+                    onSubmit={() => handleAddWorkerInProject(e)}
                 >
-                    <div className={modal.label}>
-                        Вы уверены, что хотите удалить проект?
-                    </div>
-
-                    <Button
-                        variant="delete"
-                        type="submit"
-                        disabled={loading}
-                    >
-                        {loading ? 'Удаление...' : 'Удалить'}
-                    </Button>
+                    {company?.users.map((user)=>{
+                        return (
+                        <CompanyCoworkerCard key={user.id} name={user.name} email={user.email} onClick={(e) => {
+                            handleAddWorkerInProject(e, user.id)
+                        }}>
+                        </CompanyCoworkerCard>
+                        )
+                    })
+                    }
                 </form>
             </Modal>
 

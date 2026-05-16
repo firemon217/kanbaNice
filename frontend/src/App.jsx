@@ -9,7 +9,7 @@ import RegPage from "./pages/RegPage"
 import OAuthRedirect from './pages/OAuthRedirect';
 import { CompanyPage } from './pages/layoutPages/CompanyPage';
 import { ProfilePage } from './pages/layoutPages/ProfilePage';
-import { ProjectsPage } from './pages/layoutPages/ProjectsPage';
+import { ProjectsSelectionPage } from './pages/layoutPages/ProjectsSelectionPage';
 
 function App() {
   return (<Routes>
@@ -34,7 +34,7 @@ function App() {
 
     <Route element={<PrivateRoute />}>
       <Route element={<Layout />}>
-        <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/projects" element={<ProjectsSelectionPage />} />
       </Route>
     </Route>
 

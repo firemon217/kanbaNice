@@ -65,7 +65,7 @@ export const projectService = {
   getProjectById: (id) => api.get(`/projects/${id}`),
   createProject: (name) => api.post(`/projects`, {name}),
   deleteProjectById: (id) => api.delete(`/projects/${id}`),
-  addWorkerInProjectById: (id, userId) => api.delete(`/projects/${id}/members/${userId}`),
+  addWorkerInProjectById: (id, userId) => api.post(`/projects/${id}/members/${userId}`),
 };
 
 
