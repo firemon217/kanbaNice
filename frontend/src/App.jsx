@@ -9,6 +9,7 @@ import RegPage from "./pages/RegPage"
 import OAuthRedirect from './pages/OAuthRedirect';
 import { CompanyPage } from './pages/layoutPages/CompanyPage';
 import { ProfilePage } from './pages/layoutPages/ProfilePage';
+import { ProjectsPage } from './pages/layoutPages/ProjectsPage';
 
 function App() {
   return (<Routes>
@@ -28,6 +29,12 @@ function App() {
     <Route element={<PrivateRoute />}>
       <Route element={<Layout />}>
         <Route path="/company" element={<CompanyPage />} />
+      </Route>
+    </Route>
+
+    <Route element={<PrivateRoute />}>
+      <Route element={<Layout />}>
+        <Route path="/projects" element={<ProjectsPage />} />
       </Route>
     </Route>
 

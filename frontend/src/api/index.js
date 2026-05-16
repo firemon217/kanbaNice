@@ -60,5 +60,13 @@ export const companyService = {
   updateCompany: (name) => api.put('/company', {name})
 };
 
+export const projectService = {
+  getAllProjects: () => api.get('/projects'),
+  getProjectById: (id) => api.get(`/projects/${id}`),
+  createProject: (name) => api.post(`/projects`, {name}),
+  deleteProjectById: (id) => api.delete(`/projects/${id}`),
+  addWorkerInProjectById: (id, userId) => api.delete(`/projects/${id}/members/${userId}`),
+};
+
 
 export default api;

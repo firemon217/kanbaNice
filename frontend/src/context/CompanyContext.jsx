@@ -20,9 +20,6 @@ export const CompanyProvider = ({ children }) => {
         setCompany(res.data);
       } catch (error) {
         console.error('Error fetching company data', error);
-        if (error.response?.status === 401) {
-          logout();
-        }
       }
     } else {
       setCompany(null);

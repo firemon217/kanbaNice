@@ -153,7 +153,7 @@ export const CompanyPage = () => {
 
                 <div className={styles.section}>
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Coworkers (9)</h2>
+                        <h2 className={styles.sectionTitle}>Coworkers ({company?.users.length})</h2>
                         {user.userType == "LEADER" &&
                         <div className={styles.sectionActions}>
                             <Button className={styles.textButton} onClick={() => setAddWorkerModalIsOpen(true)}>+ Add a user</Button>

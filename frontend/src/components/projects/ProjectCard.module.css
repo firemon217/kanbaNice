@@ -1,0 +1,47 @@
+
+.projectCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+
+    padding: 20px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+
+    transition: 0.2s;
+
+    background: var(--white-50);
+}
+
+.projectCard:hover {
+    border-color: var(--color-border-hover);
+
+    transform: translateY(-2px);
+}
+
+.projectInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.projectName {
+    color: var(--bluegreen-900);
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.projectId {
+    color: var(--gray-500);
+
+    font-size: 14px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
