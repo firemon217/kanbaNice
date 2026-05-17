@@ -10,6 +10,7 @@ import OAuthRedirect from './pages/OAuthRedirect';
 import { CompanyPage } from './pages/layoutPages/CompanyPage';
 import { ProfilePage } from './pages/layoutPages/ProfilePage';
 import { ProjectsSelectionPage } from './pages/layoutPages/ProjectsSelectionPage';
+import { ProjectsPage } from './pages/layoutPages/ProjectPage';
 
 function App() {
   return (<Routes>
@@ -35,6 +36,12 @@ function App() {
     <Route element={<PrivateRoute />}>
       <Route element={<Layout />}>
         <Route path="/projects" element={<ProjectsSelectionPage />} />
+      </Route>
+    </Route>
+
+    <Route element={<PrivateRoute />}>
+      <Route element={<Layout />}>
+        <Route path="/project/:id" element={<ProjectsPage />} />
       </Route>
     </Route>
 

@@ -25,10 +25,6 @@ export const ProfilePage = () => {
 
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        console.log(user)
-    }, [user]);
-
     const handleDeleteAccount = async (e) => {
         e.preventDefault();
         setLoading(true)

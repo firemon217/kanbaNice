@@ -1,15 +1,18 @@
 import { NavLink } from 'react-router-dom';
 
 import sidebar from './Sidebar.module.css';
-
-const NAV_ITEMS_PROFILE = [
-  { path: '/profile', label: 'Профиль' },
-  { path: '/project/tasks', label: 'Задачи' },
-  { path: '/projects', label: 'Проекты' },
-  { path: '/company', label: 'Ваша Компания' },
-];
+import { useProject } from '../../context/ProjectContext';
 
 export const Sidebar = ({ isOpen, setMobileMenuOpen }) => {
+
+  const { currentProject } = useProject();
+
+  const NAV_ITEMS_PROFILE = [
+    { path: '/profile', label: 'Профиль' },
+    { path: '/projects', label: 'Проекты' },
+    { path: '/company', label: 'Ваша Компания' },
+  ];
+
   return (
     <div className={sidebar.container}>
         <header className={sidebar.header}>

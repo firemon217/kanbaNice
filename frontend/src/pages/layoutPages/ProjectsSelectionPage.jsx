@@ -1,6 +1,7 @@
 import { useProject } from '../../context/ProjectContext';
 import { useCompany } from '../../context/CompanyContext';
-import { useState } from 'react';
+import { useUser } from '../../context/UserContext';
+import { useEffect, useState } from 'react';
 
 import { ProjectCard } from '../../components/projects/ProjectCard'; 
 import { CompanyCoworkerCard } from '../../components/company/Company_CoworkerCard';
@@ -11,8 +12,13 @@ import toast from 'react-hot-toast';
 
 import modal from '../../components/ui/Modal.module.css';
 import styles from './ProjectsSelectionPage.module.css';
+import { useNavigate } from 'react-router-dom';
 
 export const ProjectsSelectionPage = () => {
+
+    const navigate = useNavigate();
+    
+    const { user } = useUser();
 
     const {
         company
@@ -30,6 +36,7 @@ export const ProjectsSelectionPage = () => {
     const [loading, setLoading] = useState(false);
 
     const [selectedProjectId, setSelectedProjectId] = useState('');
+    const [selectedProject, setSelectedProject] = useState('');
     
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
     const [addWorkerModalIsOpen, setAddWorkerModalIsOpen] = useState(false);
@@ -85,7 +92,7 @@ export const ProjectsSelectionPage = () => {
             </div>
 
             <div className={styles.content}>
-
+                {user.userType == "LEADER" &&
                 <div className={styles.createBlock}>
                     <h2 className={styles.blockTitle}>
                         Создать проект
@@ -111,7 +118,7 @@ export const ProjectsSelectionPage = () => {
                         </Button>
                     </form>
                 </div>
-
+                }
                 <div className={styles.projectsBlock}>
                     <h2 className={styles.blockTitle}>
                         Список проектов
@@ -124,12 +131,17 @@ export const ProjectsSelectionPage = () => {
                     ) : (
                         <div className={styles.projectsList}>
                             {projects?.map((project) => (
-                                <ProjectCard key={project.id} id={project.is} name={project.name} 
+                                <ProjectCard key={project.id} id={project.is} name={project.name} enableLeaderFunctional={user.userType == "LEADER"}
                                 onAddWorker={() => {
+                                    setSelectedProject(project)
                                     setSelectedProjectId(project.id);
                                     setAddWorkerModalIsOpen(true)
                                 }} 
-                                OnOpen={() => chooseCurrentProject(project.id)} onDelete={() => {
+                                OnOpen={() => {
+                                    chooseCurrentProject(project.id)
+                                    navigate(`/project/${project.id}`)
+                                }} 
+                                onDelete={() => {
                                     setSelectedProjectId(project.id);
                                     setDeleteModalIsOpen(true);
                                 }}>
@@ -178,10 +190,18 @@ export const ProjectsSelectionPage = () => {
                     onSubmit={() => handleAddWorkerInProject(e)}
                 >
                     {company?.users.map((user)=>{
+                        const isUserInProject = selectedProject?.members?.some(u => u.userId == user.id);
+
                         return (
-                        <CompanyCoworkerCard key={user.id} name={user.name} email={user.email} onClick={(e) => {
-                            handleAddWorkerInProject(e, user.id)
-                        }}>
+                        <CompanyCoworkerCard key={user.id} name={user.name} email={user.email} 
+                        onClick={(e) => {
+                            if(!isUserInProject)
+                                handleAddWorkerInProject(e, user.id)
+                        }}
+                        disabled={
+                            !isUserInProject
+                        }>
+                           {isUserInProject && "Уже в проекте"}
                         </CompanyCoworkerCard>
                         )
                     })

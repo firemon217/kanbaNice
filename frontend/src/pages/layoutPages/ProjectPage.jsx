@@ -7,12 +7,9 @@ import { Button } from '../../components/ui/elements/Button';
 import modal from '../../components/ui/Modal.module.css';
 import styles from './ProjectPage.module.css';
 
-export const ProjectsSelectionPage = () => {
+export const ProjectsPage = () => {
     const {
         projects,
-        createProjects,
-        deleteProject,
-        chooseCurrentProject,
     } = useProject();
 
     const [projectName, setProjectName] = useState('');
@@ -21,41 +18,9 @@ export const ProjectsSelectionPage = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedProjectId, setSelectedProjectId] = useState(null);
 
-    const handleCreateProject = async (e) => {
-        e.preventDefault();
-
-        if (!projectName.trim()) return;
-
-        setLoading(true);
-
-        const success = await createProjects(projectName);
-
-        if (success) {
-            setProjectName('');
-        }
-
-        setLoading(false);
-    };
-
-    const handleDeleteProject = async (e) => {
-        e.preventDefault();
-
-        setLoading(true);
-
-        const success = await deleteProject(selectedProjectId);
-
-        if (success) {
-            setDeleteModalOpen(false);
-            setSelectedProjectId(null);
-        }
-
-        setLoading(false);
-    };
-
     return (
         <div className={styles.page}>
-
-
+            sss
         </div>
     );
 };

@@ -138,19 +138,6 @@ export const CompanyPage = () => {
                 </div>
             {company && 
                 <>
-                {/* Projects Section */}
-                <div className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Projects</h2>
-                        <div className={styles.sectionActions}>
-                            <button className={styles.iconButton}>+ Add project with tasks</button>
-                            <button className={styles.textButton}>Add CRM-project</button>
-                        </div>
-                    </div>
-
-                    <CompanyProjectCard></CompanyProjectCard>
-                </div>
-
                 <div className={styles.section}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>Coworkers ({company?.users.length})</h2>

@@ -2,7 +2,7 @@ import styles from "./ProjectCard.module.css"
 
 import { Button } from '../ui/elements/Button';
 
-export const ProjectCard = ({id, name, OnOpen, onAddWorker, onDelete}) => {
+export const ProjectCard = ({id, name, enableLeaderFunctional, OnOpen, onAddWorker, onDelete}) => {
     return(
         <div className={styles.projectCard}>
             <div className={styles.projectInfo}>
@@ -22,20 +22,21 @@ export const ProjectCard = ({id, name, OnOpen, onAddWorker, onDelete}) => {
                 >
                     Открыть
                 </Button>
-
-                <Button
-                    variant="primary"
-                    onClick={onAddWorker}
-                >
-                    Добавить работника к проекту
-                </Button>
-
-                <Button
-                    variant="delete"
-                    onClick={onDelete}
-                >
-                    Удалить
-                </Button>
+                {enableLeaderFunctional && 
+                <>
+                    <Button
+                        variant="primary"
+                        onClick={onAddWorker}
+                    >
+                        Добавить работника к проекту
+                    </Button>
+                    <Button
+                        variant="delete"
+                        onClick={onDelete}
+                    >
+                        Удалить
+                    </Button>
+                </>}
             </div>
         </div>
     );

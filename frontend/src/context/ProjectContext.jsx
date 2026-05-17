@@ -19,6 +19,10 @@ export const ProjectProvider = ({ children }) => {
       try {
         const res = await projectService.getAllProjects();
         setProjects(res.data);
+        if(!currentProject)
+        {
+          setCurrentProject(projects ? projects[0] : null)
+        }
       } catch (error) {
         console.error('Error fetching projects data', error);
       }

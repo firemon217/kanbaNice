@@ -68,5 +68,4 @@ export const projectService = {
   addWorkerInProjectById: (id, userId) => api.post(`/projects/${id}/members/${userId}`),
 };
 
-
 export default api;
