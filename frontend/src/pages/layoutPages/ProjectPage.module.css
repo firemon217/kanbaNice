@@ -1,3 +1,54 @@
+/* ProjectPage.module.css */
+
 .page {
-    
+    min-height: 100vh;
+    padding: 32px;
+    color: var(--color-text-primary);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    gap: 20px;
+}
+
+.projectTitle {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.projectSubtitle {
+    margin-top: 8px;
+    color: var(--color-text-tertiary);
+    font-size: 16px;
+}
+
+.addBoardButton {
+    border-radius: 14px;
+
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.addBoardButton:hover {
+    background: var(--color-button-primary-hover);
+}
+
+.addBoardButton:active {
+    background: var(--color-button-primary-active);
+}
+
+.boards {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+
+    overflow-x: auto;
+    padding-bottom: 10px;
 }

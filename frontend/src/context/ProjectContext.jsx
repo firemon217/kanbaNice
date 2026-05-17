@@ -11,8 +11,26 @@ export const ProjectProvider = ({ children }) => {
   const { token } = useUser();  
 
   const [projects, setProjects] = useState(null);
-  const [currentProject, setCurrentProject] = useState(null)
+  const [currentProject, setCurrentProject] = useState(() => {
+    const savedProject = sessionStorage.getItem('currentProject');
+    if (savedProject && savedProject !== 'undefined') {
+      try {
+        return JSON.parse(savedProject);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  })
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (currentProject) {
+      sessionStorage.setItem('currentProject', JSON.stringify(currentProject));
+    } else {
+      sessionStorage.removeItem('currentProject');
+    }
+  }, [currentProject]);
 
   const fetchProjects = async () => {
     if (token) {

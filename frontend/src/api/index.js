@@ -68,4 +68,19 @@ export const projectService = {
   addWorkerInProjectById: (id, userId) => api.post(`/projects/${id}/members/${userId}`),
 };
 
+export const boardService = {
+  getBoards: (id) => api.get(`/projects/${id}/boards`),
+  createBoard: (id, name) => api.post(`/projects/${id}/boards`, {name}),
+  deleteBoard: (id, boardId) => api.delete(`/projects/${id}/boards/${boardId}`),
+  updateBoard: (id, boardId, name) => api.put(`/projects/${id}/boards/${boardId}`, {name})
+};
+
+export const taskService = {
+  getTasks: (id) => api.get(`/projects/boards/${id}/tasks`),
+  createTask: (id, title, description, status) => api.post(`/projects/boards/${id}/tasks`, {title, description, status}),
+  deleteTask: (id, taskId) => api.delete(`/projects/tasks/${taskId}`),
+  updateTask: (id, taskId, title, description, status) => api.put(`/projects/tasks/${taskId}`, {title, description, status})
+};
+
+
 export default api;

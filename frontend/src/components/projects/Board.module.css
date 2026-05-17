@@ -1,0 +1,75 @@
+
+.board {
+    min-width: 340px;
+    max-width: 340px;
+
+    background: var(--color-background-tertiary);
+
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+
+    padding: 18px;
+
+    box-shadow: var(--shadow-sm);
+}
+
+.boardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    margin-bottom: 20px;
+}
+
+.boardTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.taskCount {
+    display: inline-block;
+    margin-top: 6px;
+
+    color: var(--color-text-tertiary);
+    font-size: 14px;
+}
+
+.boardMenu {
+    border: none;
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+
+    font-size: 20px;
+}
+
+.tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.addTaskButton {
+    border: 2px dashed var(--color-border);
+    border-radius: 16px;
+
+    padding: 14px;
+
+    background: transparent;
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.addTaskButton:hover {
+    border-color: var(--color-border-hover);
+    background: rgba(255, 255, 255, 0.03);
+}
