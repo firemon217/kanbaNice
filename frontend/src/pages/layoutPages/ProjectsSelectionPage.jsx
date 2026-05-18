@@ -131,7 +131,7 @@ export const ProjectsSelectionPage = () => {
                     ) : (
                         <div className={styles.projectsList}>
                             {projects?.map((project) => (
-                                <ProjectCard key={project.id} id={project.is} name={project.name} enableLeaderFunctional={user.userType == "LEADER"}
+                                <ProjectCard key={project.id} id={project.id} name={project.name} enableLeaderFunctional={user.userType == "LEADER"}
                                 onAddWorker={() => {
                                     setSelectedProject(project)
                                     setSelectedProjectId(project.id);

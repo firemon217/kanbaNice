@@ -2,7 +2,6 @@
 
 .page {
     min-height: 100vh;
-    padding: 32px;
     color: var(--color-text-primary);
 }
 
@@ -10,8 +9,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
     gap: 20px;
+    height: 12vh;
+    padding: 30px;
 }
 
 .projectTitle {
@@ -50,5 +50,7 @@
     gap: 24px;
 
     overflow-x: auto;
-    padding-bottom: 10px;
+    overflow-y: hidden;
+    padding: 10px;
+    height: 88vh;
 }

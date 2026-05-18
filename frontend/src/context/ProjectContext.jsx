@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { projectService } from '../api';
+import { projectService, boardService, taskService } from '../api';
 import toast from 'react-hot-toast';
 import { useUser } from './UserContext';
 
@@ -10,6 +10,7 @@ export const useProject = () => useContext(ProjectContext);
 export const ProjectProvider = ({ children }) => {
   const { token } = useUser();  
 
+  const [boards, setBoards] = useState(null);
   const [projects, setProjects] = useState(null);
   const [currentProject, setCurrentProject] = useState(() => {
     const savedProject = sessionStorage.getItem('currentProject');
@@ -21,8 +22,50 @@ export const ProjectProvider = ({ children }) => {
       }
     }
     return null;
-  })
+  });
   const [loading, setLoading] = useState(true);
+
+  const fetchProjects = async () => {
+    if (token) {
+      try {
+        const res = await projectService.getAllProjects();
+        setProjects(res.data);
+      } catch (error) {
+        console.error('Error fetching projects data', error);
+      }
+    } else {
+      setProjects(null);
+    }
+  };
+
+  const fetchBoards = async () => {
+    if (token && currentProject) {
+      try {
+        const res = await boardService.getBoards(currentProject.id);
+        setBoards(res.data);
+      } catch (error) {
+        console.error('Error fetching boards data', error);
+        setBoards(null);
+      }
+    } else {
+      setBoards(null);
+    }
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      await fetchProjects();
+      setLoading(false);
+    };
+    init();
+  }, [token]);
+
+  useEffect(() => {
+    if (currentProject) {
+      fetchBoards();
+    }
+  }, [currentProject]);
 
   useEffect(() => {
     if (currentProject) {
@@ -32,28 +75,7 @@ export const ProjectProvider = ({ children }) => {
     }
   }, [currentProject]);
 
-  const fetchProjects = async () => {
-    if (token) {
-      try {
-        const res = await projectService.getAllProjects();
-        setProjects(res.data);
-        if(!currentProject)
-        {
-          setCurrentProject(projects ? projects[0] : null)
-        }
-      } catch (error) {
-        console.error('Error fetching projects data', error);
-      }
-    } else {
-      setProjects(null);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchProjects();
-  }, [token]);
-
+  //Projects
   const createProjects = async (name) => {
     try {
       await projectService.createProject(name);
@@ -69,13 +91,13 @@ export const ProjectProvider = ({ children }) => {
   const chooseCurrentProject = async (id) => {
     try {
       const project = await projectService.getProjectById(id);
-      setCurrentProject(project)
+      setCurrentProject(project.data);
       return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка');
       return false;
     }
-  }
+  };
 
   const addWorkerInProject = async (id, userId) => {
     try {
@@ -89,11 +111,14 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
-  const deleteProject = async(id) => {
+  const deleteProject = async (id) => {
     try {
       await projectService.deleteProjectById(id);
       toast.success('Проект удален успешно');
       await fetchProjects();
+      if (currentProject?.id === id) {
+        setCurrentProject(null);
+      }
       return true;  
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка удаления проекта');
@@ -101,13 +126,113 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  //Boards
+  const createBoard = async (name) => {
+    if (!currentProject) {
+      toast.error('Выберите проект');
+      return false;
+    }
+    try {
+      await boardService.createBoard(currentProject.id, name);
+      toast.success('Доска добавлена успешно');
+      await fetchBoards();
+      return true;  
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Ошибка добавления доски');
+      return false;
+    }
+  };
+
+  const deleteBoard = async (boardId) => {
+    if (!currentProject) {
+      toast.error('Выберите проект');
+      return false;
+    }
+    try {
+      await boardService.deleteBoard(currentProject.id, boardId);
+      toast.success('Доска удалена успешно');
+      await fetchBoards();
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Ошибка удаления доски');
+      return false;
+    }
+  };
+
+  const updateBoard = async (boardId, name) => {
+    if (!currentProject) {
+      toast.error('Выберите проект');
+      return false;
+    }
+    try {
+      await boardService.updateBoard(currentProject.id, boardId, name);
+      toast.success('Доска обновлена успешно');
+      await fetchBoards();
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Ошибка обновления доски');
+      return false;
+    }
+  };
+
+  //Tasks
+  const getTasks = async (boardId) => {
+    try {
+      const res = await taskService.getTasks(boardId);
+      return res.data;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const createTask = async (boardId, title, description, status) => {
+    try {
+      await taskService.createTask(boardId, title, description, status);
+      toast.success('Задача создана успешно');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Ошибка создания задачи');
+      return false;
+    }
+  };
+
+  const deleteTask = async (taskId) => {
+    try {
+      await taskService.deleteTask(null, taskId);
+      toast.success('Задача удалена успешно');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Ошибка удаления задачи');
+      return false;
+    }
+  };
+
+  const updateTask = async (taskId, title, description, status) => {
+    try {
+      await taskService.updateTask(null, taskId, title, description, status);
+      toast.success('Задача обновлена успешно');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Ошибка обновления задачи');
+      return false;
+    }
+  };
+
   const value = {
     projects,
+    boards,
     currentProject,
     createProjects,
     addWorkerInProject,
     deleteProject,
     chooseCurrentProject,
+    createBoard,
+    deleteBoard,
+    updateBoard,
+    createTask,
+    deleteTask,
+    updateTask,
+    getTasks
   };
 
   return (

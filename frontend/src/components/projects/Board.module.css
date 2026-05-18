@@ -2,14 +2,15 @@
 .board {
     min-width: 340px;
     max-width: 340px;
-
+    height: fit-content; 
+    max-height: 100%;
     background: var(--color-background-tertiary);
-
     border: 1px solid var(--color-border);
     border-radius: 20px;
-
     padding: 18px;
-
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
     box-shadow: var(--shadow-sm);
 }
 
@@ -50,12 +51,20 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    max-height: 80%;
+}
+
+.tasks::-webkit-scrollbar {
+  display: none; 
 }
 
 .addTaskButton {
     border: 2px dashed var(--color-border);
     border-radius: 16px;
-
+    width: 100%;
+    margin-bottom: 10px;
     padding: 14px;
 
     background: transparent;
@@ -72,4 +81,17 @@
 .addTaskButton:hover {
     border-color: var(--color-border-hover);
     background: rgba(255, 255, 255, 0.03);
+}
+
+.createBoard
+{
+    width: 100%;
+    text-align: center;
+}
+
+.input
+{
+    width: 100%;
+    height: 30px;
+    margin-top: 10px
 }
