@@ -1,0 +1,371 @@
+/* ============================================================
+   KanbaNice Desktop — JavaFX Stylesheet
+   Colors mirrored from React CSS tokens
+   ============================================================ */
+
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 14px;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+    -fx-background-color: #0a332e;
+    -fx-pref-width: 220px;
+    -fx-min-width: 220px;
+    -fx-max-width: 220px;
+}
+
+.sidebar-title {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-padding: 28 24 20 24;
+}
+
+.sidebar-nav-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 10 16 10 16;
+    -fx-alignment: center-left;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-max-width: infinity;
+}
+
+.sidebar-nav-item:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+}
+
+.sidebar-nav-item.active {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+    -fx-font-weight: bold;
+}
+
+/* ---- Buttons ---- */
+.btn-primary {
+    -fx-background-color: #15554e;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #0a332e;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 22 10 22;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #0f4d45;
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #051a17;
+}
+
+.btn-primary:disabled {
+    -fx-opacity: 0.6;
+}
+
+.btn-delete {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-border-color: #b91c1c;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 22 10 22;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.btn-delete:hover {
+    -fx-background-color: #dc2626;
+}
+
+.btn-delete:pressed {
+    -fx-background-color: #b91c1c;
+}
+
+.btn-delete:disabled {
+    -fx-opacity: 0.6;
+}
+
+.btn-cancel {
+    -fx-background-color: #f87171;
+    -fx-text-fill: white;
+    -fx-border-color: #ef4444;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 22 10 22;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.btn-cancel:hover {
+    -fx-background-color: #ef4444;
+}
+
+.btn-dashed {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-padding: 12 20 12 20;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-max-width: infinity;
+}
+
+.btn-dashed:hover {
+    -fx-border-color: #d1d5db;
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+}
+
+.btn-ghost {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fafafa;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 6 14 6 14;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.btn-ghost:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ---- Form inputs ---- */
+.form-input {
+    -fx-background-color: #f9fafb;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 16 10 16;
+    -fx-font-size: 14px;
+    -fx-pref-width: 380px;
+    -fx-max-width: infinity;
+}
+
+.form-input:focused {
+    -fx-border-color: #15554e;
+    -fx-border-width: 2px;
+}
+
+.form-label {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.form-label-dark {
+    -fx-text-fill: #374151;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* ---- Login card ---- */
+.login-card {
+    -fx-background-color: white;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 40px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 24, 0, 0, 6);
+    -fx-min-width: 380px;
+    -fx-max-width: 420px;
+}
+
+.login-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0a332e;
+}
+
+.login-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b7280;
+}
+
+/* ---- Modal ---- */
+.modal-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+/* ---- Page typography ---- */
+.page-title {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.page-subtitle {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 14px;
+}
+
+.section-title {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.divider-label {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 13px;
+}
+
+.error-text {
+    -fx-text-fill: #ef4444;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+}
+
+/* ---- Board column ---- */
+.board-column {
+    -fx-background-color: #0a332e;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 18px;
+    -fx-min-width: 300px;
+    -fx-pref-width: 300px;
+    -fx-max-width: 300px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+}
+
+.board-title {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
+.task-count {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 13px;
+}
+
+/* ---- Task card ---- */
+.task-card {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 4, 0, 0, 1);
+}
+
+.task-card:hover {
+    -fx-border-color: #d1d5db;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0, 0, 3);
+}
+
+.task-title {
+    -fx-text-fill: #111827;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
+.task-description {
+    -fx-text-fill: #4b5563;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+}
+
+.task-tag {
+    -fx-background-color: #f3f4f6;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 4 10 4 10;
+    -fx-text-fill: #374151;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* ---- Project card ---- */
+.project-card {
+    -fx-background-color: #0a332e;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-padding: 20px;
+    -fx-min-width: 260px;
+    -fx-pref-width: 280px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0, 0, 2);
+}
+
+.project-card-name {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
+.project-card-info {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 13px;
+}
+
+/* ---- Coworker card ---- */
+.coworker-card {
+    -fx-background-color: #0a332e;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 16px;
+    -fx-min-width: 200px;
+    -fx-pref-width: 220px;
+}
+
+/* ---- Info card ---- */
+.info-card {
+    -fx-background-color: #0a332e;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 14px;
+    -fx-background-radius: 14px;
+    -fx-padding: 24px;
+}
+
+/* ---- ScrollPane fix ---- */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:horizontal .track,
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb,
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 4px;
+}

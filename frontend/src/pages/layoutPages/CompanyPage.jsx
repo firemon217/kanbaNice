@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const CompanyPage = () => {
 
-      const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const { user } = useUser();
     const { company, createCompany, addWorker, deleteWorker, deleteCompany, updateCompany } = useCompany();
@@ -102,17 +102,16 @@ export const CompanyPage = () => {
     return (
         <div className={styles.page}>
             <div className={styles.container}>
-                {/* Header */}
                 <div className={styles.header}>
-                    <div className={styles.avatar}>
-                        {company?.name.charAt(0)}
+                     <div className={styles.avatar}>
+                        {company?.name?.charAt(0)}
                     </div>
                     <div className={styles.headerInfo}>
                         <div className={styles.name}>{company ? company.name : user.userType == "LEADER" ? "Создайте компанию" : "Вы не принадлижите ни одной компании"}</div>
                     </div>
                     {user.userType == "LEADER" &&
                     <>
-                    <Button variant={!company ? "primary" : ""} className={company ? styles.editButton : ""} onClick={company ? () => setUpdateCompanyModalIsOpen(true) : setCreateCompanyModalIsOpen(true)}>
+                    <Button variant={!company ? "primary" : ""} className={company ? styles.editButton : ""} onClick={company ? () => setUpdateCompanyModalIsOpen(true) : () => setCreateCompanyModalIsOpen(true)}>
                         {company &&
                             <>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -164,7 +163,6 @@ export const CompanyPage = () => {
             </>
             }
             </div>
-
             <Modal isOpen={createCompanyModalIsOpen} onClose={() => setCreateCompanyModalIsOpen(false)} title="Создать компанию">
                 <form className={modal.form} onSubmit={(e) => handleCreateCompany(e)}>
                     <div className={modal.inputWrapper}>

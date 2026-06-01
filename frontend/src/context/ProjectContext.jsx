@@ -12,8 +12,10 @@ export const ProjectProvider = ({ children }) => {
 
   const [boards, setBoards] = useState(null);
   const [projects, setProjects] = useState(null);
+  const [tasksMap, setTasksMap] = useState({}); 
+
   const [currentProject, setCurrentProject] = useState(() => {
-    const savedProject = sessionStorage.getItem('currentProject');
+  const savedProject = sessionStorage.getItem('currentProject');
     if (savedProject && savedProject !== 'undefined') {
       try {
         return JSON.parse(savedProject);
@@ -52,6 +54,20 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  const fetchTasks = async (boardId) => {
+    try {
+      const res = await taskService.getTasks(boardId);
+      setTasksMap(prev => ({
+        ...prev,
+        [boardId]: res.data
+      }));
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
+
   useEffect(() => {
     const init = async () => {
       setLoading(true);
@@ -62,10 +78,12 @@ export const ProjectProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    if (currentProject) {
+    if (currentProject && token) {
       fetchBoards();
+    } else {
+      setBoards(null);
     }
-  }, [currentProject]);
+  }, [currentProject, token]);
 
   useEffect(() => {
     if (currentProject) {
@@ -149,7 +167,7 @@ export const ProjectProvider = ({ children }) => {
       return false;
     }
     try {
-      await boardService.deleteBoard(currentProject.id, boardId);
+      await boardService.deleteBoard(boardId);
       toast.success('Доска удалена успешно');
       await fetchBoards();
       return true;
@@ -165,7 +183,7 @@ export const ProjectProvider = ({ children }) => {
       return false;
     }
     try {
-      await boardService.updateBoard(currentProject.id, boardId, name);
+      await boardService.updateBoard(boardId, name);
       toast.success('Доска обновлена успешно');
       await fetchBoards();
       return true;
@@ -175,20 +193,11 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
-  //Tasks
-  const getTasks = async (boardId) => {
-    try {
-      const res = await taskService.getTasks(boardId);
-      return res.data;
-    } catch (error) {
-      return null;
-    }
-  };
-
   const createTask = async (boardId, title, description, status) => {
     try {
       await taskService.createTask(boardId, title, description, status);
       toast.success('Задача создана успешно');
+      fetchTasks(boardId); 
       return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка создания задачи');
@@ -196,10 +205,11 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
-  const deleteTask = async (taskId) => {
+  const deleteTask = async (boardId, taskId) => {
     try {
-      await taskService.deleteTask(null, taskId);
+      await taskService.deleteTask(taskId);
       toast.success('Задача удалена успешно');
+      fetchTasks(boardId);
       return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка удаления задачи');
@@ -207,10 +217,11 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
-  const updateTask = async (taskId, title, description, status) => {
+  const updateTask = async (boardId, taskId, title, description, status) => {
     try {
-      await taskService.updateTask(null, taskId, title, description, status);
+      await taskService.updateTask(taskId, title, description, status);
       toast.success('Задача обновлена успешно');
+      fetchTasks(boardId);
       return true;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Ошибка обновления задачи');
@@ -222,6 +233,7 @@ export const ProjectProvider = ({ children }) => {
     projects,
     boards,
     currentProject,
+    tasksMap,
     createProjects,
     addWorkerInProject,
     deleteProject,
@@ -229,10 +241,10 @@ export const ProjectProvider = ({ children }) => {
     createBoard,
     deleteBoard,
     updateBoard,
+    fetchTasks,
     createTask,
     deleteTask,
-    updateTask,
-    getTasks
+    updateTask
   };
 
   return (

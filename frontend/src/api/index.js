@@ -71,15 +71,15 @@ export const projectService = {
 export const boardService = {
   getBoards: (id) => api.get(`/projects/${id}/boards`),
   createBoard: (id, name) => api.post(`/projects/${id}/boards`, {name}),
-  deleteBoard: (id, boardId) => api.delete(`/projects/${id}/boards/${boardId}`),
-  updateBoard: (id, boardId, name) => api.put(`/projects/${id}/boards/${boardId}`, {name})
+  deleteBoard: (id) => api.delete(`/projects/boards/${id}`),
+  updateBoard: (id, name) => api.put(`/projects/boards/${id}`, {name})
 };
 
 export const taskService = {
   getTasks: (id) => api.get(`/projects/boards/${id}/tasks`),
   createTask: (id, title, description, status) => api.post(`/projects/boards/${id}/tasks`, {title, description, status}),
-  deleteTask: (id, taskId) => api.delete(`/projects/tasks/${taskId}`),
-  updateTask: (id, taskId, title, description, status) => api.put(`/projects/tasks/${taskId}`, {title, description, status})
+  deleteTask: (taskId) => api.delete(`/projects/tasks/${taskId}`),
+  updateTask: (taskId, title, description, status) => api.put(`/projects/tasks/${taskId}`, {title, description, status})
 };
 
 

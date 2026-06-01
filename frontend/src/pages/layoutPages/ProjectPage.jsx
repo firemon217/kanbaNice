@@ -35,6 +35,8 @@ export const ProjectsPage = () => {
             await createBoard(boardName)
         }
         finally{
+            setCreateBoardModalIsOpen(false)
+            setBoardName('')
             setLoading(false)
         }
     }
@@ -48,6 +50,8 @@ export const ProjectsPage = () => {
         finally{
             setCreateTaskModalIsOpen(false)
             setCurrentBoardId('')
+            setTaskTitle('')
+            setTaskDiscription('')
             setLoading(false)
         }
     }
@@ -61,7 +65,7 @@ export const ProjectsPage = () => {
                     </h1>
 
                     <p className={styles.projectSubtitle}>
-                        Manage boards and tasks
+                        Управляйте досками и задачами
                     </p>
                 </div>
 
@@ -69,7 +73,7 @@ export const ProjectsPage = () => {
                     e.stopPropagation();
                     setCreateBoardModalIsOpen(true)
                 }}>
-                    + Add board
+                    + Добавить доску
                 </Button>
             </div>
 
@@ -98,6 +102,8 @@ export const ProjectsPage = () => {
             <Modal isOpen={createTaskModalIsOpen} onClose={() => {
                     setCreateTaskModalIsOpen(false);
                     setCurrentBoardId('')
+                    setTaskTitle('')
+                    setTaskDiscription('')
                 }} title="Добавить задачу">
                 <form className={modal.form} onSubmit={(e) => handleCreateTask(e)}>
                     <label className={modal.label}>

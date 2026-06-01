@@ -8,7 +8,7 @@ const CompanyContext = createContext();
 export const useCompany = () => useContext(CompanyContext);
 
 export const CompanyProvider = ({ children }) => {
-  const { token } = useUser();  
+  const { token, user } = useUser();  
 
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);

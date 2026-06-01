@@ -8,89 +8,136 @@ import { Task } from './Task';
 
 export const Board = ({onCreate, id, name, setName, handleCreateBoard, title, style, onAddTask}) => {
 
-    const { getTasks } = useProject()
+    const {   
+        tasksMap,      
+        fetchTasks,
+        deleteBoard,
+        updateBoard
+    } = useProject()
 
-    const [tasks, setTasks] = useState()
+    const tasks = tasksMap[id] || [];
 
-    const fetchTasks = async () =>
-    {
-        if(onCreate) return;
-        try
-        {
-            setTasks(await getTasks(id))
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [editTitleValue, setEditTitleValue] = useState(title);
+
+    const handleDeleteClick = async () => {
+        if (window.confirm('Вы уверены, что хотите удалить эту доску? Все задачи будут удалены.')) {
+            await deleteBoard(id);
         }
-        finally{}
-    }
+    };
 
-    const handleCreateTask = async(e) =>
-    {
-        e.preventDefault()
-        await onAddTask()
-        await fetchTasks()
-    }
+    const handleUpdateTitle = async () => {
+        if (editTitleValue.trim() === '') return;
+        
+        const success = await updateBoard(id, editTitleValue);
+        if (success) {
+            setIsEditingTitle(false);
+        }
+    };
 
-    useEffect(() =>{
-        fetchTasks()
-    }, [])
+    useEffect(() => {
+        if (!onCreate && id) {
+            fetchTasks(id);
+        }
+    }, [id, onCreate]);
+
+    if (onCreate) {
+        return (
+            <div className={styles.board} style={style} onClick={(e)=>{e.stopPropagation()}}>
+                <form 
+                    onSubmit={handleCreateBoard}
+                    className={styles.createBoard}
+                >
+                    <h2 className={styles.boardTitle}>
+                        Введите название доски
+                    </h2>
+                    <input 
+                        className={styles.input} 
+                        value={name} 
+                        onChange={(e)=>setName(e.target.value)}
+                        placeholder="Название доски"
+                    />
+                    <Button className={styles.addTaskButton} type="submit">
+                        + Создать доску
+                    </Button>
+                </form>
+            </div>
+        );
+    }
 
     return (
-    <div className={styles.board} style={style} onClick={(e)=>{e.stopPropagation()}}>
-        <div className={styles.boardHeader}>
-            {!onCreate &&
-            <>
-                <div>
-                    <h2 className={styles.boardTitle}>
-                        {title}
-                    </h2>
-
-                    <span className={styles.taskCount}>
-                        {tasks?.length} tasks
-                    </span>
+        <div className={styles.board} style={style} onClick={(e)=>{e.stopPropagation()}}>
+            <div className={styles.boardHeader}>
+                <div className={styles.headerContent}>
+                    {isEditingTitle ? (
+                        <div className={styles.editTitleContainer}>
+                            <input 
+                                className={styles.input}
+                                value={editTitleValue}
+                                onChange={(e) => setEditTitleValue(e.target.value)}
+                                autoFocus
+                            />
+                            <div className={styles.editActions}>
+                                <Button onClick={handleUpdateTitle} className={styles.saveBtn}>Подтвердить</Button>
+                                <Button onClick={()=>{
+                                    setEditTitleValue(title);
+                                    setIsEditingTitle(false);}} 
+                                    className={styles.cancelBtn}>Отменить</Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <h2 
+                                className={styles.boardTitle} 
+                                title="Двойной клик для редактирования"
+                            >
+                                {title}
+                            </h2>
+                            <span className={styles.taskCount}>
+                                {tasks?.length || 0} задач
+                            </span>
+                        </>
+                    )}
                 </div>
 
-                <Button className={styles.boardMenu}>
-                    •••
-                </Button>
-            </>
-            }
-            {onCreate &&
-            <form 
-                onSubmit={handleCreateBoard}
-                className={styles.createBoard}
-            >
-                <h2 className={styles.boardTitle}>
-                    Введите название доски
-                </h2>
+                <div className={styles.boardControls}>
+                    {!isEditingTitle && (
+                        <>
+                            <Button 
+                                className={styles.editBoardBtn} 
+                                onClick={() => setIsEditingTitle(true)}
+                                title="Переименовать доску"
+                            >
+                                ✏️
+                            </Button>
+                            <Button 
+                                className={styles.deleteBoardBtn} 
+                                onClick={handleDeleteClick}
+                                title="Удалить доску"
+                            >
+                                🗑️
+                            </Button>
+                        </>
+                    )}
+                </div>
+            </div>
 
-                <input 
-                    className={styles.input} 
-                    value={name} 
-                    onChange={(e)=>setName(e.target.value)}
-                    placeholder="Название доски"
-                />
-
-                <Button className={styles.addTaskButton} type="submit">
-                    + Создать доску
-                </Button>
-            </form>
-            }
-        </div>
-        <Button className={styles.addTaskButton} onClick={(e) => {handleCreateTask(e)}}>
-            + Добавить задачу
-        </Button>   
-        <div className={styles.tasks}>
-            {!onCreate &&
-            <>
+            <Button className={styles.addTaskButton} onClick={(e) => {onAddTask(e)}}>
+                + Добавить задачу
+            </Button>  
+            
+            <div className={styles.tasks}>
                 {tasks?.map((task) => (
                     <Task
                         key={task.id}
+                        id={task.id}
+                        boardId={id}
                         title={task.title}
                         description={task.description}
+                        status={task.status}
                     />
                 ))}
-            </>
-            }
+            </div>
         </div>
-    </div>
     );
 }

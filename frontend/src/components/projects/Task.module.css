@@ -24,6 +24,21 @@
     font-weight: 700;
 }
 
+.editInput, .editTextarea {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.editTextarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+
 .taskDescription {
     margin: 0;
 

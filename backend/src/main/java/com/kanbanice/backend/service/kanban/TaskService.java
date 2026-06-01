@@ -84,17 +84,6 @@ public class TaskService {
         assertSameCompany(currentUser, project.getCompany());
         ProjectMember member = assertMemberAndGetRole(currentUser, project);
 
-        boolean isProjectLeader = currentUser.getUserType() == UserType.LEADER
-                && member.getRole() == ProjectMemberRole.LEADER;
-        if (!isProjectLeader && currentUser.getUserType() == UserType.WORKER) {
-            if (dto.title() != null || dto.description() != null) {
-                throw new IllegalStateException("WORKER can only change task status");
-            }
-            if (dto.status() == null) {
-                throw new IllegalStateException("Status is required for WORKER task update");
-            }
-        }
-
         if (dto.title() != null) {
             task.setTitle(dto.title());
         }
