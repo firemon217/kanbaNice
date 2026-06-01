@@ -11,6 +11,13 @@ export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('accessToken'));
   const [loading, setLoading] = useState(true);
 
+  const syncToken = () => {
+    const newToken = localStorage.getItem('accessToken');
+    if (newToken !== token) {
+      setToken(newToken);
+    }
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem('accessToken');
     if (storedToken && storedToken !== token) {
@@ -45,7 +52,6 @@ export const UserProvider = ({ children }) => {
       const { accessToken, userId } = res.data;
 
       localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('userId', userId);
 
       setToken(accessToken);
 
@@ -81,9 +87,7 @@ export const UserProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('userId');
 
-    // force full reset
     window.location.href = "/login";
   };
 
@@ -121,6 +125,7 @@ export const UserProvider = ({ children }) => {
     updateProfile,
     forgotPassword,
     deleteAccount,
+    syncToken
   };
 
   return (

@@ -8,13 +8,13 @@ const CompanyContext = createContext();
 export const useCompany = () => useContext(CompanyContext);
 
 export const CompanyProvider = ({ children }) => {
-  const { token, user } = useUser();  
+  const { user } = useUser();  
 
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchCompany = async () => {
-    if (token) {
+    if (user) {
       try {
         const res = await companyService.getCompany();
         setCompany(res.data);
@@ -29,7 +29,7 @@ export const CompanyProvider = ({ children }) => {
 
   useEffect(() => {
     fetchCompany();
-  }, [token]);
+  }, [user]);
 
   const createCompany = async (name) => {
     try {

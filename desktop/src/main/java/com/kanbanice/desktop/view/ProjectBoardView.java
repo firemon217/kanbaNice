@@ -101,6 +101,7 @@ public class ProjectBoardView {
         for (Board b : boards) {
             BoardColumn col = new BoardColumn(b);
             col.setOnAddTaskRequest(() -> showCreateTaskDialog(b.getId(), col));
+            col.setOnDeleteRequest(() -> loadBoards(projectId));
             boardsRow.getChildren().add(col);
         }
     }

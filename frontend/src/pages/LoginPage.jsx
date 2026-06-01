@@ -47,7 +47,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    navigate('/oauth2/redirect');
+      window.location.href = "/oauth2/authorization/google";
   };
 
   return (

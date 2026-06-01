@@ -100,31 +100,30 @@ public class AuthService {
 
     public ResponseEntity<LoginResponseDTO> HandleOAuth2LoginRequest(String registrationId, OAuth2User oAuth2User){
 
-        AuthProviderType ProviderType=authUtil.FindProviderType(registrationId);
-        String ProviderId=authUtil.FindProviderId(oAuth2User,registrationId);
+        AuthProviderType providerType=authUtil.FindProviderType(registrationId);
+        String providerId=authUtil.FindProviderId(oAuth2User,registrationId);
 
-        User user=userRepository.findByProviderTypeAndProviderId(ProviderType,ProviderId).orElse(null);
+        User user=userRepository.findByProviderTypeAndProviderId(providerType, providerId).orElse(null);
+
         String email=oAuth2User.getAttribute("email");
         String name=oAuth2User.getAttribute("name");
 
-        User EmailUser=userRepository.findByUsername(email).orElse(null);
-
-        if(user==null && EmailUser==null){
-
-            String userName=authUtil.determineUsernameFromOAuth2User(oAuth2User,registrationId,ProviderId);
-            user=SignUpInternal(new SignupRequestDTO(userName,email,null,name, UserType.WORKER), ProviderId,ProviderType);
-        }
-        else if(user!=null){
-          if(email!=null && !email.isBlank() && !email.equals(user.getUsername())){
-              user.setName(name);
-              userRepository.save(user);
-          }
-        }
-        else{
-            throw new BadCredentialsException("This User is alredy registerd with type :" + EmailUser .getProviderType());
+        if (user == null && email != null) {
+            user = userRepository.findByEmail(email).orElse(null); 
         }
 
-        LoginResponseDTO loginResponseDTO=new  LoginResponseDTO(authUtil.generateAccessToken(user),user.getId() );
+        if (user == null) {
+            String userName = authUtil.determineUsernameFromOAuth2User(oAuth2User, registrationId, providerId);
+            user = SignUpInternal(new SignupRequestDTO(userName, email, null, name, UserType.WORKER), providerId, providerType);
+        } else {
+            if (user.getProviderId() == null || !user.getProviderId().equals(providerId)) {
+                user.setProviderId(providerId);
+                user.setProviderType(providerType);
+                userRepository.save(user);
+            }
+        }
+
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(authUtil.generateAccessToken(user), user.getId());
         return ResponseEntity.ok(loginResponseDTO);
     }
 

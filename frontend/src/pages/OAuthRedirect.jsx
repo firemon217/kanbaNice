@@ -1,34 +1,37 @@
 import { useEffect } from "react";
+import { useUser } from '../context/UserContext';
+import { useNavigate } from "react-router-dom";
 
 export default function OAuthRedirect() {
+    const { syncToken } = useUser();
+    const navigate = useNavigate();
+
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-
+        
         const token = params.get("token");
         const userId = params.get("userId");
+        const error = params.get("error");
 
-        console.log("TOKEN:", token);
+        if (error) {
+            console.error("OAuth Error:", error);
+            navigate("/login?error=oauth_failed");
+            return;
+        }
 
         if (token) {
             localStorage.setItem("accessToken", token);
-            localStorage.setItem("token", token); // Store explicitly securely
-
-            if (userId) {
-                localStorage.setItem("userId", userId);
-            }
-
-            console.log("LOCAL STORAGE:", localStorage.getItem("token"));
-
-            // ✅ Hard redirect to refresh auth state mapping
-            window.location.href = "/dashboard";
+            syncToken();
+            navigate("/profile"); 
         } else {
-            window.location.href = "/login";
+            console.warn("No token found in URL");
+            navigate("/login");
         }
-    }, []);
+    }, [navigate]);
 
     return (
-        <div className="">
-            Logging you in...
+        <div className="flex items-center justify-center h-screen">
+            <p>Logging you in...</p>
         </div>
     );
 }
