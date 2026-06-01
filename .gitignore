@@ -3,6 +3,8 @@
 
 # IDE
 .idea/
+.vscode/
+.m2/
 
 # Node
 node_modules/
@@ -15,3 +17,6 @@ backend/src/main/resources
 
 # Uploads
 backend/uploads/
+
+#SSL
+ssl/
