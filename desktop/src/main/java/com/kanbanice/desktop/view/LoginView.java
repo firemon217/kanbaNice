@@ -117,9 +117,12 @@ public class LoginView {
                 var body = Map.of("username", username, "password", password);
                 var auth = ApiClient.get().post("/auth/login", body, AuthResponse.class);
                 AppState.getInstance().setToken(auth.getToken());
-
-                // var user = ApiClient.get().get("/api/users/profile", UserProfile.class);
-                // AppState.getInstance().setUser(user);
+                System.out.println("=== DEBUG LOGIN ===");
+                System.out.println("Raw Response Object: " + auth.toString());
+                System.out.println("Extracted Token: " + auth.getToken());
+                System.out.println("===================");
+                var user = ApiClient.get().get("/api/users/profile", UserProfile.class);
+                AppState.getInstance().setUser(user);
 
                 Platform.runLater(() -> App.navigateToMain("projects"));
             } catch (Exception ex) {
