@@ -53,7 +53,6 @@ public class BoardService {
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
 
         assertSameCompany(currentUser, project.getCompany());
-        assertProjectLeader(currentUser, project);
 
         KanbanBoard board = KanbanBoard.builder()
                 .name(dto.name())
@@ -78,7 +77,6 @@ public class BoardService {
 
         KanbanProject project = board.getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertProjectLeader(currentUser, project);
 
         board.setName(dto.name());
         KanbanBoard saved = boardRepository.save(board);
@@ -100,8 +98,6 @@ public class BoardService {
         KanbanProject project = board.getProject();
         assertSameCompany(currentUser, project.getCompany());
 
-        assertProjectLeader(currentUser, project);
-
         boardRepository.delete(board);
     }
 
@@ -115,23 +111,6 @@ public class BoardService {
         if (project.getMembers() == null || project.getMembers().stream()
                 .noneMatch(m -> m.getUser() != null && m.getUser().getId().equals(currentUser.getId()))) {
             throw new IllegalStateException("Forbidden: not a project member");
-        }
-    }
-
-    private ProjectMemberRole getCurrentUserRoleInProject(User currentUser, KanbanProject project) {
-        return project.getMembers().stream()
-                .filter(m -> m.getUser() != null && m.getUser().getId().equals(currentUser.getId()))
-                .map(ProjectMember::getRole)
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Forbidden: not a project member"));
-    }
-
-    private void assertProjectLeader(User currentUser, KanbanProject project) {
-        if (currentUser.getUserType() != UserType.LEADER) {
-            throw new IllegalStateException("Only LEADER can manage boards");
-        }
-        if (getCurrentUserRoleInProject(currentUser, project) != ProjectMemberRole.LEADER) {
-            throw new IllegalStateException("Only project leader can manage boards");
         }
     }
 }

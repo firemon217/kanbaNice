@@ -46,7 +46,6 @@ public class TaskService {
 
         KanbanProject project = board.getProject();
         assertSameCompany(currentUser, project.getCompany());
-        assertProjectLeader(currentUser, project);
 
         KanbanTask task = KanbanTask.builder()
                 .title(dto.title())
@@ -82,7 +81,6 @@ public class TaskService {
 
         KanbanProject project = task.getBoard().getProject();
         assertSameCompany(currentUser, project.getCompany());
-        ProjectMember member = assertMemberAndGetRole(currentUser, project);
 
         if (dto.title() != null) {
             task.setTitle(dto.title());
@@ -109,8 +107,6 @@ public class TaskService {
         KanbanProject project = task.getBoard().getProject();
         assertSameCompany(currentUser, project.getCompany());
 
-        assertProjectLeader(currentUser, project);
-
         taskRepository.delete(task);
     }
 
@@ -124,22 +120,6 @@ public class TaskService {
         boolean ok = project.getMembers().stream()
                 .anyMatch(m -> m.getUser().getId().equals(currentUser.getId()));
         if (!ok) throw new IllegalStateException("Forbidden: not a project member");
-    }
-
-    private ProjectMember assertMemberAndGetRole(User currentUser, KanbanProject project) {
-        return project.getMembers().stream()
-                .filter(m -> m.getUser().getId().equals(currentUser.getId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Forbidden: not a project member"));
-    }
-
-    private void assertProjectLeader(User currentUser, KanbanProject project) {
-        if (currentUser.getUserType() != UserType.LEADER) {
-            throw new IllegalStateException("Only LEADER can manage tasks");
-        }
-        if (assertMemberAndGetRole(currentUser, project).getRole() != ProjectMemberRole.LEADER) {
-            throw new IllegalStateException("Only project leader can manage tasks");
-        }
     }
 
     private TaskResponseDTO toTaskResponse(KanbanTask task) {
