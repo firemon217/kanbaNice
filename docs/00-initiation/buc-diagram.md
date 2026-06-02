@@ -2,46 +2,7 @@
 
 ## Диаграмма
 
-```plantuml
-@startuml
-title Бизнес-прецеденты kanbaNice
-
-left to right direction
-
-actor "Администратор\nкомпании" as Admin
-actor "Участник\nпроекта" as User
-actor "Аудитор" as Auditor
-actor "Руководитель\nпроекта" as Leader
-
-rectangle "kanbaNice — Система управления проектами" {
-    usecase "UC-B1\nРегистрация и\nвход в систему" as UB1
-    usecase "UC-B2\nУправление\nкомпанией" as UB2
-    usecase "UC-B3\nУправление\nсотрудниками" as UB3
-    usecase "UC-B4\nСоздание и\nведение проектов" as UB4
-    usecase "UC-B5\nУправление\nканбан-досками" as UB5
-    usecase "UC-B6\nРабота с задачами" as UB6
-    usecase "UC-B7\nПросмотр\nстатуса задач" as UB7
-    usecase "UC-B8\nВосстановление\nпароля" as UB8
-}
-
-Admin --> UB1
-Admin --> UB2
-Admin --> UB3
-Admin --> UB4
-
-Leader --> UB1
-Leader --> UB4
-Leader --> UB5
-Leader --> UB6
-
-User --> UB1
-User --> UB6
-User --> UB8
-
-Auditor --> UB1
-Auditor --> UB7
-@enduml
-```
+![Бизнес прецеденты](../images/00/business_precedents.png)
 
 ## Описание бизнес-прецедентов
 
