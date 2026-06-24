@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Exception;
+package com.kanbanice.backend.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import io.jsonwebtoken.JwtException;

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmailServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.service.impl</a> &gt; <span class="el_source">EmailServiceImpl.java</span></div><h1>EmailServiceImpl.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.service.impl;
+
+import com.kanbanice.backend.entity.User;
+import com.kanbanice.backend.entity.UserPrinciple;
+import com.kanbanice.backend.service.EmailService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+@Service
+<span class="nc" id="L18">@RequiredArgsConstructor</span>
+public class EmailServiceImpl implements EmailService {
+
+    private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
+
+    @Value(&quot;${spring.mail.username}&quot;)
+    private String fromEmail;
+
+    @Value(&quot;${app.name}&quot;)
+    private String appName;
+
+    @Value(&quot;${app.frontend.url}&quot;)
+    private String frontendUrl;
+
+    @Override
+    public void sendHtmlEmail(String to, String subject, String htmlBody) {
+        try {
+<span class="nc" id="L36">            MimeMessage message = mailSender.createMimeMessage();</span>
+<span class="nc" id="L37">            MimeMessageHelper helper = new MimeMessageHelper(message, true, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L38">            helper.setFrom(fromEmail);</span>
+<span class="nc" id="L39">            helper.setTo(to);</span>
+<span class="nc" id="L40">            helper.setSubject(subject);</span>
+<span class="nc" id="L41">            helper.setText(htmlBody, true);</span>
+<span class="nc" id="L42">            mailSender.send(message);</span>
+<span class="nc" id="L43">        } catch (MessagingException e) {</span>
+<span class="nc" id="L44">            throw new RuntimeException(&quot;Failed to send email to: &quot; + to, e);</span>
+<span class="nc" id="L45">        }</span>
+<span class="nc" id="L46">    }</span>
+
+    @Override
+    public void sendWelcomeEmail(String toEmail, String name) {
+<span class="nc" id="L50">        Context context = new Context();</span>
+<span class="nc" id="L51">        context.setVariable(&quot;appName&quot;, appName);</span>
+<span class="nc" id="L52">        context.setVariable(&quot;name&quot;, name);</span>
+<span class="nc" id="L53">        context.setVariable(&quot;loginUrl&quot;, frontendUrl + &quot;/login&quot;);</span>
+
+<span class="nc" id="L55">        sendHtmlEmail(toEmail,</span>
+                &quot;Welcome to &quot; + appName + &quot;!&quot;,
+<span class="nc" id="L57">                buildFromTemplate(&quot;welcome&quot;, context));</span>
+<span class="nc" id="L58">    }</span>
+
+    @Override
+    public void sendPasswordResetEmail(String toEmail, String name, String token) {
+<span class="nc" id="L62">        Context context = new Context();</span>
+<span class="nc" id="L63">        context.setVariable(&quot;appName&quot;, appName);</span>
+<span class="nc" id="L64">        context.setVariable(&quot;name&quot;, name);</span>
+<span class="nc" id="L65">        context.setVariable(&quot;resetUrl&quot;, frontendUrl + &quot;/reset-password?token=&quot; + token);</span>
+
+<span class="nc" id="L67">        sendHtmlEmail(toEmail,</span>
+                &quot;Reset your &quot; + appName + &quot; password&quot;,
+<span class="nc" id="L69">                buildFromTemplate(&quot;password-reset&quot;, context));</span>
+<span class="nc" id="L70">    }</span>
+
+    @Override
+    public void sendEmailVerificationEmail(String toEmail, String name, String token) {
+<span class="nc" id="L74">        Context context = new Context();</span>
+<span class="nc" id="L75">        context.setVariable(&quot;appName&quot;, appName);</span>
+<span class="nc" id="L76">        context.setVariable(&quot;name&quot;, name);</span>
+<span class="nc" id="L77">        context.setVariable(&quot;verifyUrl&quot;, frontendUrl + &quot;/verify-email?token=&quot; + token);</span>
+
+<span class="nc" id="L79">        sendHtmlEmail(toEmail,</span>
+                &quot;Verify your new email — &quot; + appName,
+<span class="nc" id="L81">                buildFromTemplate(&quot;email-verification&quot;, context));</span>
+<span class="nc" id="L82">    }</span>
+
+    @Override
+    public void sendPasswordChangedNotificationEmail(String toEmail, String name) {
+<span class="nc" id="L86">        Context context = new Context();</span>
+<span class="nc" id="L87">        context.setVariable(&quot;appName&quot;, appName);</span>
+<span class="nc" id="L88">        context.setVariable(&quot;name&quot;, name);</span>
+<span class="nc" id="L89">        context.setVariable(&quot;supportUrl&quot;, frontendUrl + &quot;/support&quot;);</span>
+
+<span class="nc" id="L91">        sendHtmlEmail(toEmail,</span>
+                &quot;Your password was changed — &quot; + appName,
+<span class="nc" id="L93">                buildFromTemplate(&quot;password-changed&quot;, context));</span>
+<span class="nc" id="L94">    }</span>
+
+    private String buildFromTemplate(String templateName, Context context) {
+        try {
+<span class="nc" id="L98">            return templateEngine.process(&quot;emails/&quot; + templateName, context);</span>
+<span class="nc" id="L99">        } catch (Exception e) {</span>
+<span class="nc" id="L100">            e.printStackTrace();</span>
+<span class="nc" id="L101">            throw new RuntimeException(&quot;Failed to build email template: &quot; + templateName + &quot;. Reason: &quot; + e.getMessage(), e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

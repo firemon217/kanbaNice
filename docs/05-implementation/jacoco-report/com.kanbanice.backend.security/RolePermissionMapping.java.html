@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RolePermissionMapping.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.security</a> &gt; <span class="el_source">RolePermissionMapping.java</span></div><h1>RolePermissionMapping.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.security;
+
+import com.kanbanice.backend.entity.type.PermissionType;
+import com.kanbanice.backend.entity.type.RoleType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+<span class="nc" id="L11">public class RolePermissionMapping {</span>
+<span class="fc" id="L12">    private static final Map&lt;RoleType, Set&lt;PermissionType&gt;&gt; map = Map.of(</span>
+
+<span class="fc" id="L14">            RoleType.ADMIN, Set.of(</span>
+                    PermissionType.EXPENSE_READ,   PermissionType.EXPENSE_CREATE,
+                    PermissionType.EXPENSE_UPDATE, PermissionType.EXPENSE_DELETE,
+                    PermissionType.INCOME_READ,    PermissionType.INCOME_CREATE,
+                    PermissionType.INCOME_UPDATE,  PermissionType.INCOME_DELETE,
+                    PermissionType.BUDGET_READ,    PermissionType.BUDGET_CREATE,
+                    PermissionType.BUDGET_UPDATE,  PermissionType.BUDGET_DELETE,
+                    PermissionType.CATEGORY_READ,  PermissionType.CATEGORY_CREATE,
+                    PermissionType.CATEGORY_UPDATE,PermissionType.CATEGORY_DELETE,
+                    PermissionType.USER_READ,      PermissionType.USER_MANAGE
+            ),
+
+<span class="fc" id="L26">            RoleType.USER, Set.of(</span>
+                    PermissionType.EXPENSE_READ,   PermissionType.EXPENSE_CREATE,
+                    PermissionType.EXPENSE_UPDATE, PermissionType.EXPENSE_DELETE,
+                    PermissionType.INCOME_READ,    PermissionType.INCOME_CREATE,
+                    PermissionType.INCOME_UPDATE,  PermissionType.INCOME_DELETE,
+                    PermissionType.BUDGET_READ,    PermissionType.BUDGET_CREATE,
+                    PermissionType.BUDGET_UPDATE,  PermissionType.BUDGET_DELETE,
+                    PermissionType.CATEGORY_READ,  PermissionType.CATEGORY_CREATE,
+                    PermissionType.CATEGORY_UPDATE,PermissionType.CATEGORY_DELETE
+            ),
+
+<span class="fc" id="L37">            RoleType.AUDITOR, Set.of(</span>
+                    PermissionType.EXPENSE_READ,
+                    PermissionType.INCOME_READ,
+                    PermissionType.BUDGET_READ,
+                    PermissionType.CATEGORY_READ,
+                    PermissionType.USER_READ
+            )
+    );
+
+    public static Set&lt;SimpleGrantedAuthority&gt; getAuthoritiesForRole(RoleType role) {
+
+<span class="fc" id="L48">        Set&lt;SimpleGrantedAuthority&gt; authorities = map.getOrDefault(role, Set.of())</span>
+<span class="fc" id="L49">                .stream()</span>
+<span class="fc" id="L50">                .map(permission -&gt; new SimpleGrantedAuthority(permission.getPermission()))</span>
+<span class="fc" id="L51">                .collect(Collectors.toSet());</span>
+
+<span class="fc" id="L53">        authorities.add(new SimpleGrantedAuthority(&quot;ROLE_&quot; + role.name()));</span>
+
+<span class="fc" id="L55">        return authorities;</span>
+    }
+
+    public static boolean hasPermission(Set&lt;RoleType&gt; roles, PermissionType permission) {
+
+<span class="nc" id="L60">        return roles.stream()</span>
+<span class="nc" id="L61">                .anyMatch(role -&gt; map.getOrDefault(role, Set.of()).contains(permission));</span>
+    }
+    }
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

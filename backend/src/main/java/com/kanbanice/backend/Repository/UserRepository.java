@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Repository;
+package com.kanbanice.backend.repository;
 
 import com.kanbanice.backend.entity.type.AuthProviderType;
 import com.kanbanice.backend.entity.User;

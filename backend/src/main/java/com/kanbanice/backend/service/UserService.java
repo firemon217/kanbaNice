@@ -1,10 +1,11 @@
 package com.kanbanice.backend.service;
 
-import com.kanbanice.backend.Exception.GlobalExceptionHandler;
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.dto.*;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.type.AuthProviderType;
+import com.kanbanice.backend.exception.GlobalExceptionHandler;
+
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

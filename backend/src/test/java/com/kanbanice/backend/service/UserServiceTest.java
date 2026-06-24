@@ -1,6 +1,6 @@
 package com.kanbanice.backend.service;
 
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.dto.ChangePasswordDto;
 import com.kanbanice.backend.dto.UpdateProfileDto;
 import com.kanbanice.backend.dto.UserProfileResponseDTO;

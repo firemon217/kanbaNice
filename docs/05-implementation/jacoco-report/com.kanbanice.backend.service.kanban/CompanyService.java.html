@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompanyService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.service.kanban</a> &gt; <span class="el_source">CompanyService.java</span></div><h1>CompanyService.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.service.kanban;
+
+import com.kanbanice.backend.dto.kanban.CompanyCreateDTO;
+import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
+import com.kanbanice.backend.dto.kanban.CompanyUpdateDTO;
+import com.kanbanice.backend.dto.kanban.WorkerRequestDTO;
+import com.kanbanice.backend.dto.UserResponseDTO;
+import com.kanbanice.backend.repository.UserRepository;
+import com.kanbanice.backend.entity.Company;
+import com.kanbanice.backend.entity.User;
+import com.kanbanice.backend.entity.type.UserType;
+import com.kanbanice.backend.repository.kanban.KanbanProjectRepository;
+import com.kanbanice.backend.repository.kanban.KanbaniceUserCompanyRepository;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+
+import java.util.stream.Collectors;
+import java.util.List;
+
+import jakarta.persistence.EntityNotFoundException;
+
+
+@Service
+<span class="fc" id="L27">@RequiredArgsConstructor</span>
+public class CompanyService {
+
+    private final CurrentUserUtil currentUserUtil;
+    private final KanbaniceUserCompanyRepository companyRepository;
+    private final KanbanProjectRepository projectRepository;
+    private final UserRepository userRepository;
+
+    @Transactional
+    public CompanyResponseDTO createCompany(CompanyCreateDTO dto) {
+<span class="fc" id="L37">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (currentUser.getCompany() != null) {</span>
+<span class="fc" id="L40">            throw new IllegalStateException(&quot;Company already exists for this user&quot;);</span>
+        }
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (currentUser.getUserType() != UserType.LEADER) {</span>
+<span class="fc" id="L44">            throw new IllegalStateException(&quot;Only LEADER can create company&quot;);</span>
+        }
+
+<span class="fc" id="L47">        Company company = Company.builder()</span>
+<span class="fc" id="L48">                .name(dto.name())</span>
+<span class="fc" id="L49">                .build();</span>
+
+<span class="fc" id="L51">        company = companyRepository.save(company);</span>
+<span class="fc" id="L52">        currentUser.setCompany(company);</span>
+<span class="fc" id="L53">        userRepository.save(currentUser);</span>
+<span class="fc" id="L54">        return new CompanyResponseDTO(company.getId(), company.getName(), List.of());</span>
+    }
+
+    @Transactional(readOnly = true)
+    public CompanyResponseDTO getMyCompany() {
+<span class="fc" id="L59">        User currentUser = currentUserUtil.getCurrentUser();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (currentUser.getCompany() == null) {</span>
+<span class="fc" id="L61">            throw new EntityNotFoundException(&quot;Company not found&quot;);</span>
+        }
+        
+<span class="fc" id="L64">        Company company = currentUser.getCompany();</span>
+        
+<span class="fc" id="L66">        List&lt;User&gt; companyUsers = userRepository.findAllByCompany_Id(company.getId());</span>
+        
+<span class="fc" id="L68">        List&lt;UserResponseDTO&gt; userDTOs = companyUsers.stream()</span>
+<span class="fc" id="L69">            .map(user -&gt; new UserResponseDTO(</span>
+<span class="fc" id="L70">                user.getId(),</span>
+<span class="fc" id="L71">                user.getName(),</span>
+<span class="fc" id="L72">                user.getEmail(),</span>
+<span class="fc" id="L73">                user.getUserType()</span>
+            ))
+<span class="fc" id="L75">            .collect(Collectors.toList());</span>
+        
+<span class="fc" id="L77">        return new CompanyResponseDTO(</span>
+<span class="fc" id="L78">            company.getId(), </span>
+<span class="fc" id="L79">            company.getName(),</span>
+            userDTOs
+        );
+    }
+
+    @Transactional
+    public void addWorkerToMyCompany(WorkerRequestDTO dto) {
+<span class="fc" id="L86">        User currentUser = currentUserUtil.getCurrentUser();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (currentUser.getUserType() != UserType.LEADER) {</span>
+<span class="fc" id="L88">            throw new IllegalStateException(&quot;Only LEADER can add workers to company&quot;);</span>
+        }
+
+<span class="fc" id="L91">        Company company = currentUser.getCompany();</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (company == null) {</span>
+<span class="nc" id="L93">            throw new IllegalStateException(&quot;Leader has no company&quot;);</span>
+        }
+
+<span class="fc" id="L96">        User worker = userRepository.findByEmail(dto.getEmail())</span>
+<span class="fc" id="L97">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if (worker.getUserType() != UserType.WORKER) {</span>
+<span class="nc" id="L100">            throw new IllegalStateException(&quot;Only WORKER can be added to company&quot;);</span>
+        }
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (worker.getCompany() != null) {</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            if (worker.getCompany().getId().equals(company.getId())) {</span>
+<span class="fc" id="L105">                throw new IllegalStateException(&quot;Worker already in your company&quot;);</span>
+            }
+<span class="fc" id="L107">            throw new IllegalStateException(&quot;Worker already belongs to another company&quot;);</span>
+        }
+
+<span class="fc" id="L110">        worker.setCompany(company);</span>
+<span class="fc" id="L111">        userRepository.save(worker);</span>
+<span class="fc" id="L112">    }</span>
+
+    @Transactional
+    public void deleteWorkerToMyCompany(Long id) {
+<span class="fc" id="L116">        User currentUser = currentUserUtil.getCurrentUser();</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (currentUser.getUserType() != UserType.LEADER) {</span>
+<span class="nc" id="L118">            throw new IllegalStateException(&quot;Only LEADER can delete workers to company&quot;);</span>
+        }
+
+<span class="fc" id="L121">        Company company = currentUser.getCompany();</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (company == null) {</span>
+<span class="nc" id="L123">            throw new IllegalStateException(&quot;Leader has no company&quot;);</span>
+        }
+
+<span class="fc" id="L126">        User worker = userRepository.findById(id)</span>
+<span class="fc" id="L127">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (worker.getUserType() != UserType.WORKER) {</span>
+<span class="nc" id="L130">            throw new IllegalStateException(&quot;Only WORKER can be deleted to company&quot;);</span>
+        }
+
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (worker.getCompany() == null) {</span>
+<span class="nc" id="L134">            throw new IllegalStateException(&quot;Worker not in your company&quot;);</span>
+        }
+        else
+        {
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            if (!worker.getCompany().getId().equals(company.getId())) {</span>
+<span class="nc" id="L139">                throw new IllegalStateException(&quot;Worker already belongs to another company&quot;);</span>
+            }
+        }
+
+<span class="fc" id="L143">        worker.setCompany(null);</span>
+<span class="fc" id="L144">        userRepository.save(worker);</span>
+<span class="fc" id="L145">    }</span>
+
+    @Transactional
+    public CompanyResponseDTO updateMyCompany(CompanyUpdateDTO dto) {
+<span class="fc" id="L149">        User currentUser = currentUserUtil.getCurrentUser();</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (currentUser.getUserType() != UserType.LEADER) {</span>
+<span class="fc" id="L151">            throw new IllegalStateException(&quot;Only LEADER can update company&quot;);</span>
+        }
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (currentUser.getCompany() == null) {</span>
+<span class="nc" id="L154">            throw new EntityNotFoundException(&quot;Company not found&quot;);</span>
+        }
+
+<span class="fc" id="L157">        Company company = companyRepository.findById(currentUser.getCompany().getId())</span>
+<span class="pc" id="L158">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Company not found&quot;));</span>
+<span class="fc" id="L159">        company.setName(dto.name());</span>
+<span class="fc" id="L160">        Company savedCompany = companyRepository.save(company);</span>
+
+<span class="fc" id="L162">        List&lt;User&gt; companyUsers = userRepository.findAllByCompany_Id(company.getId());</span>
+        
+<span class="fc" id="L164">        List&lt;UserResponseDTO&gt; userDTOs = companyUsers.stream()</span>
+<span class="fc" id="L165">            .map(user -&gt; new UserResponseDTO(</span>
+<span class="fc" id="L166">                user.getId(),</span>
+<span class="fc" id="L167">                user.getName(),</span>
+<span class="fc" id="L168">                user.getEmail(),</span>
+<span class="fc" id="L169">                user.getUserType()</span>
+            ))
+<span class="fc" id="L171">            .collect(Collectors.toList());</span>
+        
+<span class="fc" id="L173">        return new CompanyResponseDTO(</span>
+<span class="fc" id="L174">            company.getId(), </span>
+<span class="fc" id="L175">            company.getName(),</span>
+            userDTOs
+        );
+    }
+
+    @Transactional
+    public void deleteMyCompany() {
+<span class="fc" id="L182">        User currentUser = currentUserUtil.getCurrentUser();</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        if (currentUser.getUserType() != UserType.LEADER) {</span>
+<span class="fc" id="L184">            throw new IllegalStateException(&quot;Only LEADER can delete company&quot;);</span>
+        }
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">        if (currentUser.getCompany() == null) {</span>
+<span class="nc" id="L187">            throw new EntityNotFoundException(&quot;Company not found&quot;);</span>
+        }
+
+<span class="fc" id="L190">        Company company = companyRepository.findById(currentUser.getCompany().getId())</span>
+<span class="pc" id="L191">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Company not found&quot;));</span>
+
+<span class="fc" id="L193">        projectRepository.deleteAll(projectRepository.findAllByCompany(company));</span>
+
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        for (User user : userRepository.findAllByCompany_Id(company.getId())) {</span>
+<span class="fc" id="L196">            user.setCompany(null);</span>
+<span class="fc" id="L197">            userRepository.save(user);</span>
+<span class="fc" id="L198">        }</span>
+
+<span class="fc" id="L200">        companyRepository.delete(company);</span>
+<span class="fc" id="L201">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

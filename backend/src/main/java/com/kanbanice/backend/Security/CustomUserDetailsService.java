@@ -1,6 +1,6 @@
-package com.kanbanice.backend.Security;
+package com.kanbanice.backend.security;
 
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

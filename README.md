@@ -220,14 +220,12 @@ mvnw.cmd javafx:run
 
 ### График активности
 
-> Скриншот добавляется перед сдачей проекта.  
-> Путь: `docs/images/git-commit-activity.png`
-
 ![Активность коммитов](docs/images/git-commit-activity.png)
 
 ### Тепловая карта
 
-> Скриншот добавляется перед сдачей проекта.  
-> Путь: `docs/images/git-punch-card.png`
-
 ![Распределение по времени](docs/images/git-punch-card.png)
+
+## Скриншоты интерфейса
+
+Полная галерея экранов Web и Desktop клиентов доступна по ссылке: [Смотреть скриншоты](docs/08-ui/screenshots.md)

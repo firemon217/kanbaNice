@@ -5,7 +5,7 @@ import com.kanbanice.backend.entity.Company;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.kanban.*;
 import com.kanbanice.backend.entity.type.UserType;
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.repository.kanban.KanbanProjectRepository;
 import com.kanbanice.backend.repository.kanban.ProjectMemberRepository;
 import jakarta.persistence.EntityNotFoundException;

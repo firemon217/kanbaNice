@@ -2,9 +2,10 @@ package com.kanbanice.backend.controller;
 
 import com.kanbanice.backend.dto.LoginRequestDTO;
 import com.kanbanice.backend.dto.LoginResponseDTO;
-import com.kanbanice.backend.Security.AuthService;
 import com.kanbanice.backend.dto.SignupRequestDTO;
 import com.kanbanice.backend.dto.SignupResponseDTO;
+import com.kanbanice.backend.security.AuthService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

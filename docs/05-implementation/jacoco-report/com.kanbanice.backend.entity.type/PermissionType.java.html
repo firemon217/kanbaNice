@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PermissionType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.entity.type</a> &gt; <span class="el_source">PermissionType.java</span></div><h1>PermissionType.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.entity.type;
+
+import lombok.*;
+
+<span class="fc" id="L5">@RequiredArgsConstructor</span>
+@Getter
+public enum PermissionType {
+<span class="fc" id="L8">    EXPENSE_READ(&quot;expense:read&quot;),</span>
+<span class="fc" id="L9">    EXPENSE_CREATE(&quot;expense:create&quot;),</span>
+<span class="fc" id="L10">    EXPENSE_UPDATE(&quot;expense:update&quot;),</span>
+<span class="fc" id="L11">    EXPENSE_DELETE(&quot;expense:delete&quot;),</span>
+
+<span class="fc" id="L13">    INCOME_READ(&quot;income:read&quot;),</span>
+<span class="fc" id="L14">    INCOME_CREATE(&quot;income:create&quot;),</span>
+<span class="fc" id="L15">    INCOME_UPDATE(&quot;income:update&quot;),</span>
+<span class="fc" id="L16">    INCOME_DELETE(&quot;income:delete&quot;),</span>
+
+<span class="fc" id="L18">    BUDGET_READ(&quot;budget:read&quot;),</span>
+<span class="fc" id="L19">    BUDGET_CREATE(&quot;budget:create&quot;),</span>
+<span class="fc" id="L20">    BUDGET_UPDATE(&quot;budget:update&quot;),</span>
+<span class="fc" id="L21">    BUDGET_DELETE(&quot;budget:delete&quot;),</span>
+
+<span class="fc" id="L23">    CATEGORY_READ(&quot;category:read&quot;),</span>
+<span class="fc" id="L24">    CATEGORY_CREATE(&quot;category:create&quot;),</span>
+<span class="fc" id="L25">    CATEGORY_DELETE(&quot;category:delete&quot;),</span>
+<span class="fc" id="L26">    CATEGORY_UPDATE(&quot;category:update&quot;),</span>
+
+<span class="fc" id="L28">    USER_READ(&quot;user:read&quot;),</span>
+<span class="fc" id="L29">    USER_MANAGE(&quot;user:manage&quot;);</span>
+
+<span class="fc" id="L31">    public final String permission;</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

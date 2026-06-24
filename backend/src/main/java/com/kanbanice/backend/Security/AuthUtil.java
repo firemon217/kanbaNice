@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Security;
+package com.kanbanice.backend.security;
 
 import com.kanbanice.backend.entity.type.AuthProviderType;
 import com.kanbanice.backend.entity.User;

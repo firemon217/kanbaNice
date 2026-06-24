@@ -173,7 +173,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-			<!-- ✅ Fixed Java compiler plugin -->
+			<!-- Fixed Java compiler plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -216,6 +216,15 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.3.1</version>
+				<!-- <configuration>
+					<configLocation>checkstyle.xml</configLocation>
+				</configuration> -->
 			</plugin>
 
 		</plugins>

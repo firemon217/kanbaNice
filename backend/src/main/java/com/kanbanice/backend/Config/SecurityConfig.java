@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Config;
+package com.kanbanice.backend.config;
 
 import lombok.Builder;
 import org.modelmapper.ModelMapper;
@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 

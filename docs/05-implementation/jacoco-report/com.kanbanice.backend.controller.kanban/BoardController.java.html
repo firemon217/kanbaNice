@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoardController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.controller.kanban</a> &gt; <span class="el_source">BoardController.java</span></div><h1>BoardController.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.controller.kanban;
+
+import com.kanbanice.backend.dto.kanban.BoardCreateDTO;
+import com.kanbanice.backend.dto.kanban.BoardResponseDTO;
+import com.kanbanice.backend.dto.kanban.BoardUpdateDTO;
+import com.kanbanice.backend.service.kanban.BoardService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/projects&quot;)
+<span class="fc" id="L16">@RequiredArgsConstructor</span>
+public class BoardController {
+
+    private final BoardService boardService;
+
+    @GetMapping(&quot;/{projectId}/boards&quot;)
+    public ResponseEntity&lt;List&lt;BoardResponseDTO&gt;&gt; listBoards(@PathVariable Long projectId) {
+<span class="nc" id="L23">        return ResponseEntity.ok(boardService.listBoards(projectId));</span>
+    }
+
+    @PostMapping(&quot;/{projectId}/boards&quot;)
+    public ResponseEntity&lt;BoardResponseDTO&gt; createBoard(
+            @PathVariable Long projectId,
+            @Valid @RequestBody BoardCreateDTO dto
+    ) {
+<span class="nc" id="L31">        return ResponseEntity.ok(boardService.createBoard(projectId, dto));</span>
+    }
+
+    @DeleteMapping(&quot;/boards/{boardId}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteBoard(@PathVariable Long boardId) {
+<span class="nc" id="L36">        boardService.deleteBoard(boardId);</span>
+<span class="nc" id="L37">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PutMapping(&quot;/boards/{boardId}&quot;)
+    public ResponseEntity&lt;BoardResponseDTO&gt; updateBoard(
+            @PathVariable Long boardId,
+            @Valid @RequestBody BoardUpdateDTO dto
+    ) {
+<span class="nc" id="L45">        return ResponseEntity.ok(boardService.updateBoard(boardId, dto));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

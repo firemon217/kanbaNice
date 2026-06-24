@@ -1,6 +1,6 @@
-package com.kanbanice.backend.Security;
+package com.kanbanice.backend.security;
 
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.UserPrinciple;
 import jakarta.servlet.FilterChain;

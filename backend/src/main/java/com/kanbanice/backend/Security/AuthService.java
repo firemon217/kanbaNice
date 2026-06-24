@@ -1,7 +1,7 @@
-package com.kanbanice.backend.Security;
+package com.kanbanice.backend.security;
 
 import com.kanbanice.backend.entity.type.AuthProviderType;
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.dto.LoginRequestDTO;
 import com.kanbanice.backend.dto.LoginResponseDTO;
 import com.kanbanice.backend.dto.SignupRequestDTO;
@@ -13,7 +13,6 @@ import com.kanbanice.backend.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;

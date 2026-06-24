@@ -5,7 +5,7 @@ import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
 import com.kanbanice.backend.dto.kanban.CompanyUpdateDTO;
 import com.kanbanice.backend.dto.kanban.WorkerRequestDTO;
 import com.kanbanice.backend.dto.UserResponseDTO;
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.entity.Company;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.type.UserType;

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.controller</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.controller;
+
+
+import com.kanbanice.backend.repository.UserRepository;
+import com.kanbanice.backend.dto.*;
+import com.kanbanice.backend.entity.User;
+import com.kanbanice.backend.entity.UserPrinciple;
+import com.kanbanice.backend.service.UserService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/api/users&quot;)
+<span class="fc" id="L24">@RequiredArgsConstructor</span>
+public class UserController {
+
+    private final UserService userService;
+    private final UserRepository userRepository;
+
+    private User getCurrentUser() {
+<span class="fc" id="L31">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+
+<span class="pc bpc" id="L33" title="2 of 4 branches missed.">        if (authentication == null || !authentication.isAuthenticated()</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">                || authentication.getPrincipal().equals(&quot;anonymousUser&quot;)) {</span>
+<span class="nc" id="L35">            throw new RuntimeException(&quot;User not authenticated&quot;);</span>
+        }
+
+<span class="fc" id="L38">        Object principal = authentication.getPrincipal();</span>
+
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (principal instanceof UserPrinciple userPrinciple) {</span>
+<span class="fc" id="L41">            return userPrinciple.getUser();</span>
+        }
+
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (principal instanceof org.springframework.security.oauth2.core.user.DefaultOAuth2User oauthUser) {</span>
+
+<span class="nc" id="L46">            String email = oauthUser.getAttribute(&quot;email&quot;);</span>
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">            if (email == null) {</span>
+<span class="nc" id="L49">                throw new RuntimeException(&quot;Email not found from OAuth provider&quot;);</span>
+            }
+
+<span class="nc" id="L52">            return userRepository.findByEmail(email)</span>
+<span class="nc" id="L53">                    .orElseThrow(() -&gt; new RuntimeException(&quot;User not found in DB&quot;));</span>
+        }
+
+<span class="nc" id="L56">        throw new RuntimeException(&quot;Unsupported principal type: &quot; + principal.getClass().getName());</span>
+    }
+
+    @GetMapping(&quot;/profile&quot;)
+    public ResponseEntity&lt;UserProfileResponseDTO&gt; getProfile() {
+<span class="fc" id="L61">        User user = getCurrentUser();</span>
+<span class="fc" id="L62">        return ResponseEntity.ok(userService.getProfile(user.getId()));</span>
+    }
+
+    @PutMapping(&quot;/profile&quot;)
+    public ResponseEntity&lt;UserProfileResponseDTO&gt; updateProfile(
+            @Valid @RequestBody UpdateProfileDto dto) {
+
+<span class="nc" id="L69">        User user = getCurrentUser();</span>
+<span class="nc" id="L70">        return ResponseEntity.ok(userService.updateProfile(user.getId(), dto));</span>
+    }
+
+    @PostMapping(&quot;/forgot-password&quot;)
+    public ResponseEntity&lt;String&gt; forgotPassword(@RequestParam @Email @NotBlank String email) {
+
+<span class="nc" id="L76">        return ResponseEntity.ok(userService.forgotPassword(email));</span>
+    }
+
+    @PostMapping(&quot;/reset-password&quot;)
+    public ResponseEntity&lt;String&gt; resetPassword(
+            @RequestParam String token,
+            @RequestParam String newPassword) {
+
+<span class="nc" id="L84">        return ResponseEntity.ok(userService.resetPassword(token, newPassword));</span>
+    }
+
+    @DeleteMapping(&quot;/profile&quot;)
+    public ResponseEntity&lt;String&gt; deleteAccount() {
+<span class="nc" id="L89">        User user = getCurrentUser();</span>
+<span class="nc" id="L90">        return ResponseEntity.ok(userService.deleteAccount(user.getId()));</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

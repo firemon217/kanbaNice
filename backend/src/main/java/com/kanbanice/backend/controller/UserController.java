@@ -1,7 +1,7 @@
 package com.kanbanice.backend.controller;
 
 
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.dto.*;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.UserPrinciple;

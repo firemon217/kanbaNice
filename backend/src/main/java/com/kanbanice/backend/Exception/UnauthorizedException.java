@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Exception;
+package com.kanbanice.backend.exception;
 
 public class UnauthorizedException extends RuntimeException{
     public UnauthorizedException(String message) {

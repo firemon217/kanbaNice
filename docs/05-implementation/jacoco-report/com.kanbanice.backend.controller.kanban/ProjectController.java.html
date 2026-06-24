@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.controller.kanban</a> &gt; <span class="el_source">ProjectController.java</span></div><h1>ProjectController.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.controller.kanban;
+
+import com.kanbanice.backend.dto.kanban.ProjectCreateDTO;
+import com.kanbanice.backend.dto.kanban.ProjectResponseDTO;
+import com.kanbanice.backend.service.kanban.ProjectService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/projects&quot;)
+<span class="fc" id="L15">@RequiredArgsConstructor</span>
+public class ProjectController {
+
+    private final ProjectService projectService;
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;ProjectResponseDTO&gt;&gt; listMyProjects() {
+<span class="nc" id="L22">        return ResponseEntity.ok(projectService.listMyProjects());</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;ProjectResponseDTO&gt; createProject(@Valid @RequestBody ProjectCreateDTO dto) {
+<span class="nc" id="L27">        return ResponseEntity.ok(projectService.createProject(dto));</span>
+    }
+
+    @GetMapping(&quot;/{projectId}&quot;)
+    public ResponseEntity&lt;ProjectResponseDTO&gt; getProject(@PathVariable Long projectId) {
+<span class="nc" id="L32">        return ResponseEntity.ok(projectService.getProject(projectId));</span>
+    }
+
+    @PostMapping(&quot;/{projectId}/members/{userId}&quot;)
+    public ResponseEntity&lt;ProjectResponseDTO&gt; addWorkerToProject(
+            @PathVariable Long projectId,
+            @PathVariable Long userId
+    ) {
+<span class="nc" id="L40">        return ResponseEntity.ok(projectService.addWorkerToProject(projectId, userId));</span>
+    }
+
+    @DeleteMapping(&quot;/{projectId}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteProject(@PathVariable Long projectId) {
+<span class="nc" id="L45">        projectService.deleteProject(projectId);</span>
+<span class="nc" id="L46">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

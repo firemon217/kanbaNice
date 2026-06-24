@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Exception;
+package com.kanbanice.backend.exception;
 
 public class IOException extends RuntimeException {
     public IOException(String message) {

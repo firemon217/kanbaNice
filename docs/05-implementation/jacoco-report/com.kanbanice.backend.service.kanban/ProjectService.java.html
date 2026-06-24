@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.service.kanban</a> &gt; <span class="el_source">ProjectService.java</span></div><h1>ProjectService.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.service.kanban;
+
+import com.kanbanice.backend.dto.kanban.*;
+import com.kanbanice.backend.entity.Company;
+import com.kanbanice.backend.entity.User;
+import com.kanbanice.backend.entity.kanban.*;
+import com.kanbanice.backend.entity.type.UserType;
+import com.kanbanice.backend.repository.UserRepository;
+import com.kanbanice.backend.repository.kanban.KanbanProjectRepository;
+import com.kanbanice.backend.repository.kanban.ProjectMemberRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+
+@Service
+<span class="fc" id="L20">@RequiredArgsConstructor</span>
+public class ProjectService {
+
+    private final CurrentUserUtil currentUserUtil;
+    private final KanbanProjectRepository projectRepository;
+    private final ProjectMemberRepository projectMemberRepository;
+    private final UserRepository userRepository;
+
+    @Transactional(readOnly = true)
+    public List&lt;ProjectResponseDTO&gt; listMyProjects() {
+<span class="fc" id="L30">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+        // Минимально: фильтруем по членству и компании в памяти.
+        // Для производительности потом добавим repository methods.
+<span class="fc" id="L34">        return projectRepository.findAll().stream()</span>
+<span class="pc bpc" id="L35" title="2 of 4 branches missed.">                .filter(p -&gt; p.getCompany() != null &amp;&amp; currentUser.getCompany() != null</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">                        &amp;&amp; p.getCompany().getId().equals(currentUser.getCompany().getId()))</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">                .filter(p -&gt; p.getMembers() != null &amp;&amp; p.getMembers().stream()</span>
+<span class="pc bpc" id="L38" title="3 of 6 branches missed.">                        .anyMatch(m -&gt; m.getUser() != null &amp;&amp; m.getUser().getId().equals(currentUser.getId())))</span>
+<span class="fc" id="L39">                .map(this::toProjectResponse)</span>
+<span class="fc" id="L40">                .toList();</span>
+    }
+
+    @Transactional
+    public ProjectResponseDTO createProject(ProjectCreateDTO dto) {
+<span class="fc" id="L45">        User currentUser = currentUserUtil.getCurrentUser();</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (currentUser.getUserType() != UserType.LEADER) {</span>
+<span class="fc" id="L47">            throw new IllegalStateException(&quot;Only LEADER can create project&quot;);</span>
+        }
+<span class="fc" id="L49">        Company company = currentUser.getCompany();</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (company == null) {</span>
+<span class="fc" id="L52">            throw new IllegalStateException(&quot;User has no company&quot;);</span>
+        }
+
+<span class="fc" id="L55">        KanbanProject project = KanbanProject.builder()</span>
+<span class="fc" id="L56">                .name(dto.name())</span>
+<span class="fc" id="L57">                .company(company)</span>
+<span class="fc" id="L58">                .build();</span>
+
+<span class="fc" id="L60">        KanbanProject saved = projectRepository.save(project);</span>
+
+<span class="fc" id="L62">        ProjectMember leader = ProjectMember.builder()</span>
+<span class="fc" id="L63">                .project(saved)</span>
+<span class="fc" id="L64">                .user(currentUser)</span>
+<span class="fc" id="L65">                .role(ProjectMemberRole.LEADER)</span>
+<span class="fc" id="L66">                .build();</span>
+
+<span class="fc" id="L68">        projectMemberRepository.save(leader);</span>
+<span class="fc" id="L69">        saved.getMembers().add(leader);</span>
+
+<span class="fc" id="L71">        return toProjectResponse(saved);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public ProjectResponseDTO getProject(Long projectId) {
+<span class="fc" id="L76">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc" id="L78">        KanbanProject project = projectRepository.findById(projectId)</span>
+<span class="fc" id="L79">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Project not found&quot;));</span>
+
+<span class="fc" id="L81">        assertSameCompany(currentUser, project.getCompany());</span>
+<span class="fc" id="L82">        assertMember(currentUser, project);</span>
+
+<span class="fc" id="L84">        return toProjectResponse(project);</span>
+    }
+
+    @Transactional
+    public void deleteProject(Long projectId) {
+<span class="fc" id="L89">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc" id="L91">        KanbanProject project = projectRepository.findById(projectId)</span>
+<span class="fc" id="L92">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Project not found&quot;));</span>
+
+<span class="fc" id="L94">        assertSameCompany(currentUser, project.getCompany());</span>
+
+<span class="fc" id="L96">        ProjectMember member = getProjectMember(currentUser, project);</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if (member.getRole() != ProjectMemberRole.LEADER) {</span>
+<span class="nc" id="L98">            throw new IllegalStateException(&quot;Only leader can delete project&quot;);</span>
+        }
+
+<span class="fc" id="L101">        projectRepository.delete(project);</span>
+<span class="fc" id="L102">    }</span>
+
+    @Transactional
+    public ProjectResponseDTO addWorkerToProject(Long projectId, Long userId) {
+<span class="fc" id="L106">        User currentUser = currentUserUtil.getCurrentUser();</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (currentUser.getUserType() != UserType.LEADER) {</span>
+<span class="fc" id="L108">            throw new IllegalStateException(&quot;Only LEADER can add project members&quot;);</span>
+        }
+
+<span class="fc" id="L111">        KanbanProject project = projectRepository.findById(projectId)</span>
+<span class="pc" id="L112">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Project not found&quot;));</span>
+<span class="fc" id="L113">        assertSameCompany(currentUser, project.getCompany());</span>
+
+<span class="fc" id="L115">        ProjectMember currentMember = getProjectMember(currentUser, project);</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if (currentMember.getRole() != ProjectMemberRole.LEADER) {</span>
+<span class="nc" id="L117">            throw new IllegalStateException(&quot;Only project leader can add members&quot;);</span>
+        }
+
+<span class="fc" id="L120">        User worker = userRepository.findById(userId)</span>
+<span class="pc" id="L121">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (worker.getUserType() != UserType.WORKER) {</span>
+<span class="fc" id="L124">            throw new IllegalStateException(&quot;Only WORKER can be added to project&quot;);</span>
+        }
+<span class="pc bpc" id="L126" title="2 of 4 branches missed.">        if (worker.getCompany() == null || currentUser.getCompany() == null</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">                || !worker.getCompany().getId().equals(currentUser.getCompany().getId())) {</span>
+<span class="nc" id="L128">            throw new IllegalStateException(&quot;Worker must belong to your company&quot;);</span>
+        }
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (projectMemberRepository.findByProjectAndUser(project, worker).isPresent()) {</span>
+<span class="fc" id="L131">            throw new IllegalStateException(&quot;Worker already in this project&quot;);</span>
+        }
+
+<span class="fc" id="L134">        ProjectMember member = ProjectMember.builder()</span>
+<span class="fc" id="L135">                .project(project)</span>
+<span class="fc" id="L136">                .user(worker)</span>
+<span class="fc" id="L137">                .role(ProjectMemberRole.WORKER)</span>
+<span class="fc" id="L138">                .build();</span>
+<span class="fc" id="L139">        projectMemberRepository.save(member);</span>
+<span class="fc" id="L140">        project.getMembers().add(member);</span>
+
+<span class="fc" id="L142">        return toProjectResponse(project);</span>
+    }
+
+    private void assertSameCompany(User currentUser, Company projectCompany) {
+<span class="pc bpc" id="L146" title="2 of 4 branches missed.">        if (projectCompany == null || currentUser.getCompany() == null</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">                || !projectCompany.getId().equals(currentUser.getCompany().getId())) {</span>
+<span class="nc" id="L148">            throw new IllegalStateException(&quot;Forbidden: different company&quot;);</span>
+        }
+<span class="fc" id="L150">    }</span>
+
+    private void assertMember(User currentUser, KanbanProject project) {
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (project.getMembers() == null || project.getMembers().stream()</span>
+<span class="pc bpc" id="L154" title="3 of 6 branches missed.">                .noneMatch(m -&gt; m.getUser() != null &amp;&amp; m.getUser().getId().equals(currentUser.getId()))) {</span>
+<span class="nc" id="L155">            throw new IllegalStateException(&quot;Forbidden: not a project member&quot;);</span>
+        }
+<span class="fc" id="L157">    }</span>
+
+    private ProjectMember getProjectMember(User currentUser, KanbanProject project) {
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if (project.getMembers() == null) {</span>
+<span class="nc" id="L161">            throw new IllegalStateException(&quot;Forbidden: not a project member&quot;);</span>
+        }
+<span class="fc" id="L163">        return project.getMembers().stream()</span>
+<span class="pc bpc" id="L164" title="2 of 4 branches missed.">                .filter(m -&gt; m.getUser() != null &amp;&amp; m.getUser().getId().equals(currentUser.getId()))</span>
+<span class="fc" id="L165">                .findFirst()</span>
+<span class="pc" id="L166">                .orElseThrow(() -&gt; new IllegalStateException(&quot;Forbidden: not a project member&quot;));</span>
+    }
+
+    private ProjectResponseDTO toProjectResponse(KanbanProject project) {
+<span class="fc" id="L170">        List&lt;ProjectMemberResponseDTO&gt; members = project.getMembers().stream()</span>
+<span class="fc" id="L171">                .map(m -&gt; new ProjectMemberResponseDTO(</span>
+<span class="fc" id="L172">                        m.getUser().getId(),</span>
+<span class="fc" id="L173">                        m.getUser().getUsername(),</span>
+<span class="fc" id="L174">                        m.getUser().getName(),</span>
+<span class="fc" id="L175">                        m.getRole()</span>
+                ))
+<span class="fc" id="L177">                .sorted(Comparator.comparing(ProjectMemberResponseDTO::username, Comparator.nullsLast(String::compareTo)))</span>
+<span class="fc" id="L178">                .toList();</span>
+
+<span class="fc" id="L180">        return new ProjectResponseDTO(</span>
+<span class="fc" id="L181">                project.getId(),</span>
+<span class="fc" id="L182">                project.getName(),</span>
+<span class="fc" id="L183">                project.getCompany().getId(),</span>
+<span class="fc" id="L184">                project.getCreatedAt(),</span>
+                members
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

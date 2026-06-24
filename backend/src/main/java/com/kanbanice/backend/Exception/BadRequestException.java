@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Exception;
+package com.kanbanice.backend.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {

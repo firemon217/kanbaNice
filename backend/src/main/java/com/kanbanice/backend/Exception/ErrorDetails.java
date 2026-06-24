@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Exception;
+package com.kanbanice.backend.exception;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

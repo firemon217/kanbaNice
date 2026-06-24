@@ -1,9 +1,9 @@
 package com.kanbanice.backend.security;
 
-import com.kanbanice.backend.Security.AuthUtil;
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.type.AuthProviderType;
 import com.kanbanice.backend.entity.type.UserType;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

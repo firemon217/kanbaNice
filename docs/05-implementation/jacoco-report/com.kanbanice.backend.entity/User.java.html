@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.entity</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.entity;
+
+import com.kanbanice.backend.entity.type.AuthProviderType;
+import com.kanbanice.backend.entity.type.RoleType;
+import com.kanbanice.backend.entity.type.UserType;
+import com.kanbanice.backend.security.RolePermissionMapping;
+import jakarta.persistence.*;
+import lombok.*;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+<span class="fc" id="L20">@AllArgsConstructor</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">@Builder</span>
+@Getter
+<span class="pc" id="L23">@Setter</span>
+<span class="fc" id="L24">@NoArgsConstructor</span>
+@Table(name = &quot;app_user&quot;)
+public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="fc" id="L29">    private Long id;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L32">    private String name;</span>
+
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column()
+<span class="fc" id="L38">    private UserType userType;</span>
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(unique = true)                  // ✅ email should be unique
+<span class="fc" id="L44">    private String email;</span>
+
+<span class="nc" id="L46">    private String providerId;</span>
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+<span class="fc" id="L50">    private AuthProviderType providerType;</span>
+
+    @Column
+<span class="fc" id="L53">    private String resetToken;</span>
+
+    @Column
+<span class="fc" id="L56">    private LocalDateTime resetTokenExpiry;</span>
+
+    @Column
+<span class="fc" id="L59">    private LocalDateTime lastPasswordResetRequest;</span>
+
+
+    @Column
+<span class="nc" id="L63">    private String pendingEmail;</span>
+
+    @Column
+<span class="nc" id="L66">    private String emailVerificationToken;</span>
+
+    @Column
+<span class="nc" id="L69">    private LocalDateTime emailVerificationExpiry;</span>
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+<span class="nc" id="L75">    private Set&lt;RoleType&gt; roles = new HashSet&lt;&gt;();</span>
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = &quot;company_id&quot;)
+<span class="fc" id="L79">    private Company company;</span>
+
+
+    @Override
+    public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+<span class="fc" id="L84">        Set&lt;SimpleGrantedAuthority&gt; authorities = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L85">        roles.forEach(roleType -&gt;</span>
+<span class="fc" id="L86">                authorities.addAll(RolePermissionMapping.getAuthoritiesForRole(roleType))</span>
+        );
+<span class="fc" id="L88">        return authorities;</span>
+    }
+
+    @Override
+    public String getUsername() {
+<span class="fc" id="L93">        return username;</span>
+    }
+
+    @Override
+    public String getPassword() {
+<span class="fc" id="L98">        return password;</span>
+    }
+
+    @Override
+<span class="fc" id="L102">    public boolean isAccountNonExpired() { return true; }</span>
+
+    @Override
+<span class="fc" id="L105">    public boolean isAccountNonLocked() { return true; }</span>
+
+    @Override
+<span class="fc" id="L108">    public boolean isCredentialsNonExpired() { return true; }</span>
+
+    @Override
+<span class="fc" id="L111">    public boolean isEnabled() { return true; }</span>
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

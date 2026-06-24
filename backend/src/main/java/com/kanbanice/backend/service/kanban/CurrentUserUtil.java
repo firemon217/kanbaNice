@@ -2,7 +2,7 @@ package com.kanbanice.backend.service.kanban;
 
 import com.kanbanice.backend.entity.User;
 import com.kanbanice.backend.entity.UserPrinciple;
-import com.kanbanice.backend.Repository.UserRepository;
+import com.kanbanice.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

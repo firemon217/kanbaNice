@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.security</a> &gt; <span class="el_source">AuthService.java</span></div><h1>AuthService.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.security;
+
+import com.kanbanice.backend.entity.type.AuthProviderType;
+import com.kanbanice.backend.repository.UserRepository;
+import com.kanbanice.backend.dto.LoginRequestDTO;
+import com.kanbanice.backend.dto.LoginResponseDTO;
+import com.kanbanice.backend.dto.SignupRequestDTO;
+import com.kanbanice.backend.dto.SignupResponseDTO;
+import com.kanbanice.backend.entity.User;
+
+import com.kanbanice.backend.entity.type.RoleType;
+import com.kanbanice.backend.service.EmailService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
+import com.kanbanice.backend.entity.type.UserType;
+
+import java.util.Set;
+import java.util.UUID;
+
+@Service
+<span class="fc" id="L27">@RequiredArgsConstructor</span>
+public class AuthService {
+
+    private final AuthUtil authUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+
+    public LoginResponseDTO login(LoginRequestDTO request) {
+     Authentication authentication;
+        try {
+<span class="fc" id="L39">             authentication = authenticationManager.authenticate(</span>
+                    new UsernamePasswordAuthenticationToken(
+<span class="fc" id="L41">                            request.getUsername(), request.getPassword()</span>
+                    )
+            );
+<span class="fc" id="L44">        } catch (Exception e) {</span>
+<span class="fc" id="L45">            e.printStackTrace();</span>
+<span class="fc" id="L46">            throw e;</span>
+<span class="fc" id="L47">        }</span>
+<span class="fc" id="L48">        User user = (User)authentication.getPrincipal();</span>
+<span class="fc" id="L49">        String token=authUtil.generateAccessToken(user);</span>
+<span class="fc" id="L50">        return new LoginResponseDTO(token,user.getId());</span>
+    }
+
+    public User SignUpInternal( SignupRequestDTO signupRequestDTO,String providerId, AuthProviderType authProviderType){
+<span class="fc" id="L54">        User user=userRepository.findByUsername(signupRequestDTO.getUsername()).orElse(null);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if(user!=null){</span>
+<span class="fc" id="L56">            throw new IllegalArgumentException(&quot;User already exists&quot;);</span>
+        }
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {</span>
+<span class="nc" id="L60">            throw new IllegalArgumentException(&quot;Username already taken&quot;);</span>
+        }
+<span class="pc bpc" id="L62" title="1 of 4 branches missed.">        if (signupRequestDTO.getEmail() == null || signupRequestDTO.getEmail().isBlank()) {</span>
+<span class="fc" id="L63">            throw new IllegalArgumentException(&quot;Email is required&quot;);</span>
+        }
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {</span>
+<span class="fc" id="L66">            throw new IllegalArgumentException(&quot;Email already taken&quot;);</span>
+        }
+
+<span class="fc" id="L69">         user = User.builder()</span>
+<span class="fc" id="L70">                .name(signupRequestDTO.getName())</span>
+<span class="fc" id="L71">                .username(signupRequestDTO.getUsername())</span>
+<span class="fc" id="L72">                .email(signupRequestDTO.getEmail())</span>
+<span class="fc" id="L73">                .providerId(providerId)</span>
+<span class="fc" id="L74">                .providerType(authProviderType)</span>
+<span class="fc" id="L75">                .roles(Set.of(RoleType.USER))</span>
+<span class="fc" id="L76">                .userType(signupRequestDTO.getUserType())</span>
+<span class="fc" id="L77">                .build();</span>
+
+
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if(authProviderType == AuthProviderType.EMAIL){</span>
+<span class="fc" id="L81">              user.setPassword(passwordEncoder.encode(signupRequestDTO.getPassword()));</span>
+        } else {
+<span class="nc" id="L83">            user.setPassword(UUID.randomUUID().toString());</span>
+        }
+<span class="fc" id="L85">       userRepository.save(user);</span>
+        try {
+<span class="fc" id="L87">            emailService.sendWelcomeEmail(user.getEmail(), user.getName());</span>
+<span class="fc" id="L88">        } catch (Exception e) {</span>
+            // Игнорируем ошибки отправки email при регистрации
+<span class="fc" id="L90">            System.err.println(&quot;Failed to send welcome email: &quot; + e.getMessage());</span>
+<span class="fc" id="L91">        }</span>
+<span class="fc" id="L92">        return user;</span>
+    }
+    public SignupResponseDTO SignUp(SignupRequestDTO signupRequestDTO) {
+<span class="fc" id="L95">       User user=SignUpInternal(signupRequestDTO,null,AuthProviderType.EMAIL);</span>
+
+<span class="fc" id="L97">      return new SignupResponseDTO(user.getId(),user.getUsername());</span>
+    }
+
+    public ResponseEntity&lt;LoginResponseDTO&gt; HandleOAuth2LoginRequest(String registrationId, OAuth2User oAuth2User){
+
+<span class="nc" id="L102">        AuthProviderType providerType=authUtil.FindProviderType(registrationId);</span>
+<span class="nc" id="L103">        String providerId=authUtil.FindProviderId(oAuth2User,registrationId);</span>
+
+<span class="nc" id="L105">        User user=userRepository.findByProviderTypeAndProviderId(providerType, providerId).orElse(null);</span>
+
+<span class="nc" id="L107">        String email=oAuth2User.getAttribute(&quot;email&quot;);</span>
+<span class="nc" id="L108">        String name=oAuth2User.getAttribute(&quot;name&quot;);</span>
+
+<span class="nc bnc" id="L110" title="All 4 branches missed.">        if (user == null &amp;&amp; email != null) {</span>
+<span class="nc" id="L111">            user = userRepository.findByEmail(email).orElse(null); </span>
+        }
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L115">            String userName = authUtil.determineUsernameFromOAuth2User(oAuth2User, registrationId, providerId);</span>
+<span class="nc" id="L116">            user = SignUpInternal(new SignupRequestDTO(userName, email, null, name, UserType.WORKER), providerId, providerType);</span>
+<span class="nc" id="L117">        } else {</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">            if (user.getProviderId() == null || !user.getProviderId().equals(providerId)) {</span>
+<span class="nc" id="L119">                user.setProviderId(providerId);</span>
+<span class="nc" id="L120">                user.setProviderType(providerType);</span>
+<span class="nc" id="L121">                userRepository.save(user);</span>
+            }
+        }
+
+<span class="nc" id="L125">        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(authUtil.generateAccessToken(user), user.getId());</span>
+<span class="nc" id="L126">        return ResponseEntity.ok(loginResponseDTO);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

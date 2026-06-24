@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompanyController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.controller.kanban</a> &gt; <span class="el_source">CompanyController.java</span></div><h1>CompanyController.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.controller.kanban;
+
+import com.kanbanice.backend.dto.kanban.CompanyCreateDTO;
+import com.kanbanice.backend.dto.kanban.CompanyUpdateDTO;
+import com.kanbanice.backend.dto.kanban.CompanyResponseDTO;
+import com.kanbanice.backend.dto.kanban.WorkerRequestDTO;
+import com.kanbanice.backend.service.kanban.CompanyService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/api/company&quot;)
+<span class="fc" id="L15">@RequiredArgsConstructor</span>
+public class CompanyController {
+
+    private final CompanyService companyService;
+
+    @GetMapping
+    public ResponseEntity&lt;CompanyResponseDTO&gt; getMyCompany() {
+<span class="nc" id="L22">        return ResponseEntity.ok(companyService.getMyCompany());</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;CompanyResponseDTO&gt; createCompany(@Valid @RequestBody CompanyCreateDTO dto) {
+<span class="nc" id="L27">        return ResponseEntity.ok(companyService.createCompany(dto));</span>
+    }
+
+    @PostMapping(&quot;/workers&quot;)
+    public ResponseEntity&lt;Void&gt; addWorkerToMyCompany(@RequestBody WorkerRequestDTO dto) {
+<span class="nc" id="L32">        companyService.addWorkerToMyCompany(dto);</span>
+<span class="nc" id="L33">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @DeleteMapping(&quot;/workers/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteWorkerToMyCompany(@PathVariable Long id) {
+<span class="nc" id="L38">        companyService.deleteWorkerToMyCompany(id);</span>
+<span class="nc" id="L39">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PutMapping
+    public ResponseEntity&lt;CompanyResponseDTO&gt; updateMyCompany( @RequestBody CompanyUpdateDTO dto) {
+<span class="nc" id="L44">        return ResponseEntity.ok(companyService.updateMyCompany(dto));</span>
+    }
+
+    @DeleteMapping
+    public ResponseEntity&lt;Void&gt; deleteMyCompany() {
+<span class="nc" id="L49">        companyService.deleteMyCompany();</span>
+<span class="nc" id="L50">        return ResponseEntity.noContent().build();</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KanbanProject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.entity.kanban</a> &gt; <span class="el_source">KanbanProject.java</span></div><h1>KanbanProject.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.entity.kanban;
+
+import com.kanbanice.backend.entity.Company;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = &quot;kanban_project&quot;)
+@Getter
+<span class="nc" id="L14">@Setter</span>
+<span class="fc" id="L15">@NoArgsConstructor</span>
+<span class="fc" id="L16">@AllArgsConstructor</span>
+<span class="pc bpc" id="L17" title="2 of 4 branches missed.">@Builder</span>
+public class KanbanProject {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="fc" id="L22">    private Long id;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L25">    private String name;</span>
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = &quot;company_id&quot;, nullable = false)
+<span class="fc" id="L29">    private Company company;</span>
+
+    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+<span class="fc" id="L33">    private Set&lt;ProjectMember&gt; members = new HashSet&lt;&gt;();</span>
+
+    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+<span class="nc" id="L37">    private Set&lt;KanbanBoard&gt; boards = new HashSet&lt;&gt;();</span>
+
+    @Column(updatable = false)
+<span class="fc" id="L40">    private LocalDateTime createdAt;</span>
+
+    @PrePersist
+    public void prePersist() {
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if (createdAt == null) {</span>
+<span class="fc" id="L45">            createdAt = LocalDateTime.now();</span>
+        }
+<span class="fc" id="L47">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,8 +1,6 @@
 package com.kanbanice.backend.security;
 
-import com.kanbanice.backend.Repository.UserRepository;
-import com.kanbanice.backend.Security.AuthService;
-import com.kanbanice.backend.Security.AuthUtil;
+import com.kanbanice.backend.repository.UserRepository;
 import com.kanbanice.backend.dto.LoginRequestDTO;
 import com.kanbanice.backend.dto.LoginResponseDTO;
 import com.kanbanice.backend.dto.SignupRequestDTO;

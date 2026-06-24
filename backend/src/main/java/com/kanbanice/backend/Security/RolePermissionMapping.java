@@ -1,4 +1,4 @@
-package com.kanbanice.backend.Security;
+package com.kanbanice.backend.security;
 
 import com.kanbanice.backend.entity.type.PermissionType;
 import com.kanbanice.backend.entity.type.RoleType;

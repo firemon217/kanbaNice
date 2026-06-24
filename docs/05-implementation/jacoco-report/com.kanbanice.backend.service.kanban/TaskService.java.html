@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Kanbanice</a> &gt; <a href="index.source.html" class="el_package">com.kanbanice.backend.service.kanban</a> &gt; <span class="el_source">TaskService.java</span></div><h1>TaskService.java</h1><pre class="source lang-java linenums">package com.kanbanice.backend.service.kanban;
+
+import com.kanbanice.backend.dto.kanban.*;
+import com.kanbanice.backend.entity.User;
+import com.kanbanice.backend.entity.kanban.*;
+import com.kanbanice.backend.entity.type.UserType;
+import com.kanbanice.backend.repository.kanban.KanbanBoardRepository;
+import com.kanbanice.backend.repository.kanban.KanbanTaskRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L17">@RequiredArgsConstructor</span>
+public class TaskService {
+
+    private final CurrentUserUtil currentUserUtil;
+    private final KanbanTaskRepository taskRepository;
+    private final KanbanBoardRepository boardRepository;
+
+    @Transactional(readOnly = true)
+    public List&lt;TaskResponseDTO&gt; listTasks(Long boardId) {
+<span class="fc" id="L26">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc" id="L28">        KanbanBoard board = boardRepository.findById(boardId)</span>
+<span class="fc" id="L29">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Board not found&quot;));</span>
+
+<span class="fc" id="L31">        KanbanProject project = board.getProject();</span>
+<span class="fc" id="L32">        assertSameCompany(currentUser, project.getCompany());</span>
+<span class="fc" id="L33">        assertMember(currentUser, project);</span>
+
+<span class="fc" id="L35">        return taskRepository.findAllByBoard(board).stream()</span>
+<span class="fc" id="L36">                .map(this::toTaskResponse)</span>
+<span class="fc" id="L37">                .toList();</span>
+    }
+
+    @Transactional
+    public TaskResponseDTO createTask(Long boardId, TaskCreateDTO dto) {
+<span class="fc" id="L42">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc" id="L44">        KanbanBoard board = boardRepository.findById(boardId)</span>
+<span class="fc" id="L45">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Board not found&quot;));</span>
+
+<span class="fc" id="L47">        KanbanProject project = board.getProject();</span>
+<span class="fc" id="L48">        assertSameCompany(currentUser, project.getCompany());</span>
+
+<span class="fc" id="L50">        KanbanTask task = KanbanTask.builder()</span>
+<span class="fc" id="L51">                .title(dto.title())</span>
+<span class="fc" id="L52">                .description(dto.description())</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">                .status(dto.status() != null ? dto.status() : TaskStatus.TODO)</span>
+<span class="fc" id="L54">                .board(board)</span>
+<span class="fc" id="L55">                .build();</span>
+
+<span class="fc" id="L57">        KanbanTask saved = taskRepository.save(task);</span>
+<span class="fc" id="L58">        return toTaskResponse(saved);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public TaskResponseDTO getTask(Long taskId) {
+<span class="fc" id="L63">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc" id="L65">        KanbanTask task = taskRepository.findById(taskId)</span>
+<span class="fc" id="L66">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Task not found&quot;));</span>
+
+<span class="fc" id="L68">        KanbanProject project = task.getBoard().getProject();</span>
+<span class="fc" id="L69">        assertSameCompany(currentUser, project.getCompany());</span>
+<span class="fc" id="L70">        assertMember(currentUser, project);</span>
+
+<span class="fc" id="L72">        return toTaskResponse(task);</span>
+    }
+
+    @Transactional
+    public TaskResponseDTO updateTask(Long taskId, TaskUpdateDTO dto) {
+<span class="fc" id="L77">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc" id="L79">        KanbanTask task = taskRepository.findById(taskId)</span>
+<span class="fc" id="L80">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Task not found&quot;));</span>
+
+<span class="fc" id="L82">        KanbanProject project = task.getBoard().getProject();</span>
+<span class="fc" id="L83">        assertSameCompany(currentUser, project.getCompany());</span>
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (dto.title() != null) {</span>
+<span class="fc" id="L86">            task.setTitle(dto.title());</span>
+        }
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (dto.description() != null) {</span>
+<span class="nc" id="L89">            task.setDescription(dto.description());</span>
+        }
+<span class="pc bpc" id="L91" title="1 of 4 branches missed.">        if (dto.status() != null &amp;&amp; dto.status() != task.getStatus()) {</span>
+<span class="fc" id="L92">            task.setStatus(dto.status());</span>
+<span class="fc" id="L93">            task.setStatusChangedBy(currentUser.getUsername());</span>
+        }
+
+<span class="fc" id="L96">        KanbanTask saved = taskRepository.save(task);</span>
+<span class="fc" id="L97">        return toTaskResponse(saved);</span>
+    }
+
+    @Transactional
+    public void deleteTask(Long taskId) {
+<span class="fc" id="L102">        User currentUser = currentUserUtil.getCurrentUser();</span>
+
+<span class="fc" id="L104">        KanbanTask task = taskRepository.findById(taskId)</span>
+<span class="fc" id="L105">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Task not found&quot;));</span>
+
+<span class="fc" id="L107">        KanbanProject project = task.getBoard().getProject();</span>
+<span class="fc" id="L108">        assertSameCompany(currentUser, project.getCompany());</span>
+
+<span class="fc" id="L110">        taskRepository.delete(task);</span>
+<span class="fc" id="L111">    }</span>
+
+    private void assertSameCompany(User currentUser, com.kanbanice.backend.entity.Company projectCompany) {
+<span class="pc bpc" id="L114" title="2 of 6 branches missed.">        if (projectCompany == null || currentUser.getCompany() == null || !projectCompany.getId().equals(currentUser.getCompany().getId())) {</span>
+<span class="fc" id="L115">            throw new IllegalStateException(&quot;Forbidden: different company&quot;);</span>
+        }
+<span class="fc" id="L117">    }</span>
+
+    private void assertMember(User currentUser, KanbanProject project) {
+<span class="fc" id="L120">        boolean ok = project.getMembers().stream()</span>
+<span class="fc" id="L121">                .anyMatch(m -&gt; m.getUser().getId().equals(currentUser.getId()));</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (!ok) throw new IllegalStateException(&quot;Forbidden: not a project member&quot;);</span>
+<span class="fc" id="L123">    }</span>
+
+    private TaskResponseDTO toTaskResponse(KanbanTask task) {
+<span class="fc" id="L126">        return new TaskResponseDTO(</span>
+<span class="fc" id="L127">                task.getId(),</span>
+<span class="fc" id="L128">                task.getBoard().getId(),</span>
+<span class="fc" id="L129">                task.getTitle(),</span>
+<span class="fc" id="L130">                task.getDescription(),</span>
+<span class="fc" id="L131">                task.getStatus(),</span>
+<span class="fc" id="L132">                task.getStatusChangedBy(),</span>
+<span class="fc" id="L133">                task.getCreatedAt(),</span>
+<span class="fc" id="L134">                task.getUpdatedAt()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
